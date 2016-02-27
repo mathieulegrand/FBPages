@@ -58,6 +58,14 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  // re-load the LaunchScreen to prevent white screen showing before your app renders
+  UIView* launchScreen =  [[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] objectAtIndex:0];
+  launchScreen.frame = [UIScreen mainScreen].bounds;
+  rootView.loadingView = launchScreen;
+  rootView.loadingViewFadeDelay = 0.20;
+  rootView.loadingViewFadeDuration = 0.30;
+  
   return YES;
 }
 
