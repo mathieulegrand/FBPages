@@ -9,6 +9,7 @@
     "react-native": "^0.20.0",
     "react-native-fbsdkcore": "0.0.8",
     "react-native-fbsdklogin": "0.0.8",
-    "react-native-fbsdkshare": "0.0.8"
+    "react-native-fbsdkshare": "0.0.8",
+    "react-native-router-flux": "^2.3.6"
   }
 }
