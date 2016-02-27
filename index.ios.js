@@ -24,9 +24,8 @@ export default class FBPages extends React.Component {
         <Schema name="slide" sceneConfig={Navigator.SceneConfigs.FloatFromRight}/>
         <Schema name="default"/>
 
-        <Route name="launch"  hideNavBar={true} component={Launch}
-               initial={true} wrapRouter={true} title="Launch"/>
-        <Route name="home" component={Home} title="Page"/>
+        <Route name="launch" component={Launch} hideNavBar={true} wrapRouter={true} initial={true}/>
+        <Route name="home"   component={Home}   title="Page" type="replace" renderLeftButton={()=>{}}/>
       </Router>
     );
   }
