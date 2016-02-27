@@ -2,54 +2,54 @@
 
 'use strict';
 
-var React = require('react-native');
-var {
-  StyleSheet,
-  View,
-} = React;
+import React, { StyleSheet, View } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
-var FBSDKLogin = require('react-native-fbsdklogin');
-var {
-  FBSDKLoginButton,
-  FBSDKLoginManager
-} = FBSDKLogin;
-var FBSDKCore = require('react-native-fbsdkcore');
-var {
-  FBSDKAccessToken,
-} = FBSDKCore;
+import FBSDKCore,  { FBSDKAccessToken } from 'react-native-fbsdkcore';
+import FBSDKLogin, { FBSDKLoginButton, FBSDKLoginManager } from 'react-native-fbsdklogin';
 
-class Login extends React.Component {
+export default class Login extends React.Component {
   render() {
+    FBSDKAccessToken.getCurrentAccessToken((token) => {
+      if (token) {
+        let currentRoute = Actions.currentRouter.currentRoute;
+        if (currentRoute && currentRoute.name === "launch") {
+          // we are logged in, and on the launch screen, go to the "home" screen
+          Actions.home();
+        }
+      }
+    });
     return (
-      <View style={this.props.style}>
-        <FBSDKLoginButton
-          style={styles.loginButton}
-          onWillLogin={() => {
-            FBSDKAccessToken.getCurrentAccessToken((result) => {
-              if (result == null) {
-                // Login
-              } else {
-                console.log(result);
-                // Logout
-              }
-            });
-            return true;
-          }}
-          onLoginFinished={(error, result) => {
-            if (error) {
-              alert('Error while logging in.');
-              console.log(error);
-            } else {
-              if (result.isCancelled) {
-                alert('Login cancelled.');
-              }
-            }
-          }}
-          onLogoutFinished={() => alert('Logged out.')}
-          readPermissions={[]}
-          publishPermissions={[]}/>
-      </View>
-    );
+          <View style={this.props.style}>
+            <FBSDKLoginButton
+              style={styles.loginButton}
+              onWillLogin={() => {
+                FBSDKAccessToken.getCurrentAccessToken((result) => {
+                  if (result) {
+                    Actions.launch();
+                  } else {
+                    Actions.home();
+                  }
+                });
+                return true;
+              }}
+              onLoginFinished={(error, result) => {
+                if (error) {
+                  alert('Error while logging in.');
+                  console.log(error);
+                } else {
+                  if (result.isCancelled) {
+                    alert('Login cancelled.');
+                  }
+                }
+              }}
+              onLogoutFinished={() => {
+                Actions.launch();
+              }}
+              readPermissions={[]}
+              publishPermissions={[]}/>
+          </View>
+        );
   }
 }
 
@@ -59,6 +59,3 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
-
-module.exports = Login;
-

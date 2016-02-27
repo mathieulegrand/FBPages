@@ -11,17 +11,34 @@
 **/
 'use strict';
 
-import React, {
-  AppRegistry,
-  Component,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import React, { AppRegistry, Navigator, StyleSheet, Text, View } from 'react-native';
+import { Router, Route, Schema, Animations, TabBar } from 'react-native-router-flux';
 
-var Login = require('./app/components/login.ios.js');
+import Login from './app/components/login.ios.js';
 
-class Application extends Component {
+export default class FBPages extends React.Component {
+  render() {
+    return (
+      <Router>
+        <Schema name="modal" sceneConfig={Navigator.SceneConfigs.FloatFromBottom}/>
+        <Schema name="slide" sceneConfig={Navigator.SceneConfigs.FloatFromRight}/>
+        <Schema name="default"/>
+
+        <Route name="launch"  hideNavBar={true} component={Launch}
+               initial={true} wrapRouter={true} title="Launch"/>
+        <Route name="home" component={Home} title="Page"/>
+      </Router>
+    );
+  }
+}
+
+class Home extends React.Component {
+  render() {
+    return (<View style={styles.container}><Text>Home</Text><Login style={styles.login}/></View>);
+  }
+}
+
+class Launch extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -68,4 +85,4 @@ const styles = StyleSheet.create({
   }
 });
 
-AppRegistry.registerComponent('FBPages', () => Application);
+AppRegistry.registerComponent('FBPages', () => FBPages);
