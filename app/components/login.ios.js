@@ -46,8 +46,8 @@ export default class Login extends React.Component {
               onLogoutFinished={() => {
                 Actions.launch();
               }}
-              readPermissions={[]}
-              publishPermissions={[]}/>
+              readPermissions={[ ]}
+              publishPermissions={[ 'manage_pages' ]}/>
           </View>
         );
   }
