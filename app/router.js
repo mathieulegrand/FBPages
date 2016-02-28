@@ -2,7 +2,7 @@
 
 import React, { View } from 'react-native';
 import Button from 'react-native-button';
-import Icon   from 'react-native-vector-icons/FontAwesome';
+import Icon   from 'react-native-vector-icons/Ionicons';
 
 import HomeScene    from './homeScene.js';
 import WelcomeScene from './welcomeScene.js';
@@ -26,7 +26,7 @@ let Router = {
               if (typeof props.openDrawer === 'function') { props.openDrawer(); }
             }}
             containerStyle={{ height: 64, width: 64, overflow:'hidden', alignItems: 'center', flex: 1, justifyContent:'center'}}>
-            <Icon name="navicon" size={24} color="#5A7EB0" />
+            <Icon name="navicon-round" size={24} color="#5A7EB0" />
           </Button>
         );
       },
