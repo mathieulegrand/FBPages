@@ -9,6 +9,8 @@ pod 'react-native-fbsdkcore', :path => '../node_modules/react-native-fbsdkcore'
 pod 'react-native-fbsdklogin', :path => '../node_modules/react-native-fbsdklogin'
 pod 'react-native-fbsdkshare', :path => '../node_modules/react-native-fbsdkshare'
 
+pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 target 'FBPages' do
 
 end

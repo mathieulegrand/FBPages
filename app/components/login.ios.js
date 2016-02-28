@@ -15,6 +15,7 @@ export default class Login extends React.Component {
         let currentRoute = Actions.currentRouter.currentRoute;
         if (currentRoute && currentRoute.name === "launch") {
           // we are logged in, and on the launch screen, go to the "home" screen
+          console.log("We are logged in, redirect Actions.home");
           Actions.home();
         }
       }
@@ -26,9 +27,8 @@ export default class Login extends React.Component {
               onWillLogin={() => {
                 FBSDKAccessToken.getCurrentAccessToken((result) => {
                   if (result) {
+                    console.log("Actions.launch, result is true", result);
                     Actions.launch();
-                  } else {
-                    Actions.home();
                   }
                 });
                 return true;
@@ -40,10 +40,13 @@ export default class Login extends React.Component {
                 } else {
                   if (result.isCancelled) {
                     alert('Login cancelled.');
+                  } else {
+                    Actions.home();
                   }
                 }
               }}
               onLogoutFinished={() => {
+                console.log("onLogoutFinished, Actions.launch")
                 Actions.launch();
               }}
               readPermissions={[ ]}

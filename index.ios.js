@@ -12,8 +12,6 @@
 'use strict';
 
 import React, { AppRegistry, Navigator, StyleSheet, Text, View, ScrollView, Image, PixelRatio, } from 'react-native';
-import { Router, Route, Schema, Animations, TabBar } from 'react-native-router-flux';
-import Drawer from 'react-native-drawer';
 
 import Dimensions from 'Dimensions';
 
@@ -23,24 +21,51 @@ var window = Dimensions.get('window');
 
 var ImageWidth = window.width;
 
-import Login from './app/components/login.ios.js';
+import Root from './app/root.js';
+
+class TabIcon extends React.Component {
+    render(){
+        return (
+            <Text style={{color: this.props.selected ? 'red' :'black'}}>{this.props.title}</Text>
+        );
+    }
+}
+
 
 export default class FBPages extends React.Component {
+  static childContextTypes = {
+    drawer: React.PropTypes.object,
+  };
+
+  constructor (props) {
+    super(props);
+    this.state = {
+      drawer: null,
+    };
+  }
+
   render() {
+    const { drawer } = this.state;
+
+    return (<Root/>);
+
     return (
       <Router navigationBarStyle={styles.navBar}>
         <Schema name="modal" sceneConfig={Navigator.SceneConfigs.FloatFromBottom}/>
         <Schema name="slide" sceneConfig={Navigator.SceneConfigs.FloatFromRight}/>
         <Schema name="default"/>
+        <Schema name="tab" type="switch" icon={TabIcon} />
 
         <Route name="launch" component={Launch} hideNavBar wrapRouter initial/>
         <Route name="home"   component={Home}   title="Page" type="replace"
-               renderLeftButton={()=>{}} styles={{content: styles.container}}/>
-        <Route name='Drawer' hideNavBar={true} type='reset'>
+               styles={{content: styles.container}}
+               onLeft={() => { console.log("Right button pressed"); Actions.Drawer(); }}
+               leftTitle="Testing"/>
+        <Route name='Drawer' showNavigationBar={false} type='reset'>
           <SideDrawer>
-            <Router>
-              <Route name="with-drawer-a"/>
-              <Route name="with-drawer-b"/>
+            <Router showNavigationBar={false}>
+              <Route name="with-drawer-a" title="A" schema='slide' component={Home}/>
+              <Route name="with-drawer-b" title="B" schema='slide' component={Home}/>
             </Router>
           </SideDrawer>
         </Route>
@@ -49,37 +74,32 @@ export default class FBPages extends React.Component {
   }
 }
 
-class SideDrawerContent extends React.Component {
+class PostHeader extends React.Component {
   render() {
     return (
-      <View><Text>Hello</Text>
+      <View>
+        <Image source={{uri: this.props.picture.url}} style={{
+            width: 20,
+            height: 20,
+          }}/>
+        <View>
+          <Text>{this.props.story? this.props.story : this.props.name}</Text>
+          <Text>{this.props.created_time}</Text>
+        </View>
       </View>
     );
   }
 }
 
-class SideDrawer extends React.Component {
+class Post extends React.Component {
   render() {
     return (
-      <Drawer type="overlay" content={<SideDrawerContent />} tapToClose={true}
-              openDrawerOffset={0.2} panCloseMask={0.2} closedDrawerOffset={-3}
-              styles={styles.drawerStyles}>
-        {React.Children.map(children, c => React.cloneElement(c, {route: this.props.route}))}
-      </Drawer>
-    );
-  }
-}
-
-class LongText extends React.Component {
-  render() {
-    return (
-      <Text style={styles.textBox}>
-        Lorem ipsum dolor sit amet, ne ius vero ferri ridens. Id his eirmod docendi. Inani vulputate ne per. Ex posse tempor neglegentur est, quo natum essent contentiones ad. Porro omittantur ne eos, veri option democritum sed eu, ea eos oporteat splendide. Sea et audire minimum epicurei, simul senserit cu vis, sea oblique abhorreant an. Pro at prompta concludaturque, duo nibh consulatu te, fuisset voluptua adipiscing vis ex.
-        Summo electram te sit, no ius reque primis maluisset. Ex pro tempor repudiandae, accumsan deleniti partiendo pri te, at sit veri ponderum. Eu mea vocent delicata interpretaris. Dolorum offendit consetetur pri ut, ne putant definitionem sit, ut eum putant omittam definitionem. An pro idque bonorum epicurei, per no ferri expetenda, ad eos purto eripuit.
-        Eu habemus deseruisse mel, duis equidem facilisis at his, no sea lorem facilisi. Qui an deserunt periculis, ut pri elitr libris audiam. Sit affert ornatus in, diam meliore ei vim, ex labores fastidii appareat usu. Vim no facilisi quaestio torquatos. In his natum dignissim.
-        Cu odio voluptatum ius, zril intellegebat usu ex, illud erroribus percipitur ei quo. Cum verear debitis neglegentur ex, ex porro dolor quo. Viris dolor pro at. Forensibus disputando mel ad, option eripuit no est. Ei ius nihil affert putant.
-        Elit appetere et ius. Nullam vituperatoribus id eum, an consequat constituam suscipiantur usu, ut pri sale ullum labore. Mucius quidam vidisse ne nec, in qui veniam fastidii democritum. Ei posse ipsum nostrud pri, ipsum singulis euripidis eu pro, mea ei ridens nostrud insolens.
-      </Text>
+      <View>
+        <PostHeader {...this.props}/>
+        if (this.props.message) {
+          <Text>this.props.message</Text>
+        }
+      </View>
     );
   }
 }
@@ -87,16 +107,35 @@ class LongText extends React.Component {
 class Home extends React.Component {
   constructor() {
     super();
-      var feedRequest = new FBSDKGraphRequest(
-      this._handleRequest.bind(this),
-      '/652947674860909/feed',
-      { fields: { string: 'link,message,story,type,attachments' } }
-    );
-    feedRequest.start();
 
     this.state = {
+      pageId:      '652947674860909',
       feedEntries: [],
     };
+
+    // to get the list of pages I administer
+    // /me/accounts
+    let pageRequest = new FBSDKGraphRequest(
+      function(error, result) {
+        if (!error) {
+          if (result.data && result.data.length > 0) {
+            console.log(result.data[0].id + " " + result.data[0].name);
+          }
+        } else {
+          console.log("Page request error", error)
+          alert(error);
+        }
+      },
+      '/me/accounts',
+      { fields: { string: 'id,name'} }
+    ).start();
+
+    var feedRequest = new FBSDKGraphRequest(
+    this._handleRequest.bind(this),
+      '/'+this.state.pageId+'/feed',
+      { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } }
+    );
+    feedRequest.start();
   }
 
   _renderPhoto(photo) {
@@ -118,11 +157,25 @@ class Home extends React.Component {
       for (let entry of result.data) {
         switch (entry.type) {
           case "photo":
+            let uniquify = 0;
             if (entry.attachments && entry.attachments.data) {
               for (let attachment of entry.attachments.data) {
                 if (attachment.media && attachment.media.image) {
-                  allViews.push(this._renderPhoto({link: entry.link, key: entry.id, ...attachment.media.image}))
-                  console.log("add ", entry, attachment.media.image);
+                    this.setState(function(previousState, currentProps) {
+                      previousState.feedEntries.push(
+                        this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...attachment.media.image})
+                      );
+                    });
+                  uniquify++;
+                } else if (attachment.subattachments && attachment.subattachments.data) {
+                  for (let subattachment of attachment.subattachments.data) {
+                    this.setState(function(previousState, currentProps) {
+                      previousState.feedEntries.push(
+                        this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...subattachment.media.image})
+                      );
+                    });
+                    uniquify++;
+                  }
                 }
               }
             } else {
@@ -130,7 +183,12 @@ class Home extends React.Component {
             }
             break;
           case "status":
-            allViews.push(<Text style={styles.textBox} key={entry.id}>{entry.message}</Text>)
+            this.setState(function(previousState, currentProps) {
+              previousState.feedEntries.push(
+                <Text style={styles.textBox} key={entry.id}>{entry.message}</Text>
+              );
+              console.log(entry);
+            });
             break;
           case "link":
             break;
@@ -144,9 +202,8 @@ class Home extends React.Component {
         }
         console.log(entry);
       }
-      this.setState({feedEntries: allViews});
     } else {
-      console.log(error);
+      console.log("_handleMessage error",error);
       alert(error.message);
     }
   }
@@ -154,27 +211,10 @@ class Home extends React.Component {
   render() {
     return (
       <ScrollView style={styles.scrollStyle} contentContainerStyle={styles.page} automaticallyAdjustContentInsets={false}>
+        <PageHeader pageId={this.state.pageId}/>
         {this.state.feedEntries}
         <Login style={styles.login}/>
       </ScrollView>
-    );
-  }
-}
-
-class Launch extends React.Component {
-  render() {
-    return (
-      <View style={styles.scrollView}>
-        <Text style={styles.welcome}>
-          Welcome to{'\n'}
-          Pages Manager
-        </Text>
-        <Login style={styles.login}/>
-        <Text style={styles.instructions}>
-          Connect to post updates to your Facebook Pages and
-          see the number of people that have viewed your posts.
-        </Text>
-      </View>
     );
   }
 }
@@ -206,13 +246,6 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: '#c8c8c8',
   },
-  welcome: {
-    fontSize: 36,
-    color: "#5A7EB0",
-    fontWeight: "200",
-    textAlign: 'center',
-    marginTop: 80,
-  },
   login: {
     margin: 10,
     alignItems: 'center',
@@ -220,16 +253,6 @@ const styles = StyleSheet.create({
   navBar: {
     height: 64,
   },
-  instructions: {
-    fontSize: 15,
-    color: "#989898",
-    fontWeight: "400",
-    textAlign: 'center',
-    marginTop: 40,
-    marginBottom: 40,
-    marginLeft: 20,
-    marginRight: 20,
-  }
 });
 
 AppRegistry.registerComponent('FBPages', () => FBPages);

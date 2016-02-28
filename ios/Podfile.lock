@@ -34,6 +34,8 @@ PODS:
     - React/Core
   - React/RCTWebSocket (0.20.0):
     - React/Core
+  - RNVectorIcons (1.1.1):
+    - React
 
 DEPENDENCIES:
   - react-native-fbsdkcore (from `../node_modules/react-native-fbsdkcore`)
@@ -44,6 +46,7 @@ DEPENDENCIES:
   - React/RCTNetwork (from `../node_modules/react-native`)
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
 
 EXTERNAL SOURCES:
   React:
@@ -54,6 +57,8 @@ EXTERNAL SOURCES:
     :path: ../node_modules/react-native-fbsdklogin
   react-native-fbsdkshare:
     :path: ../node_modules/react-native-fbsdkshare
+  RNVectorIcons:
+    :path: ../node_modules/react-native-vector-icons
 
 SPEC CHECKSUMS:
   Bolts: f52a250053bb517ca874523c3913776359ab3def
@@ -64,5 +69,6 @@ SPEC CHECKSUMS:
   react-native-fbsdkcore: 41561900e8f26faffdf150aae1b2495605487f5c
   react-native-fbsdklogin: d4c1e156516ac8c17dd46224531fa76ace3d0fb1
   react-native-fbsdkshare: 6f4fe6174e0225ff81132d5d64345646338ac6da
+  RNVectorIcons: 18f2a1a02be087cf10d079041b9b13c082a4d797
 
 COCOAPODS: 0.39.0
