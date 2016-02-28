@@ -17,10 +17,14 @@ let Router = {
         return 'Page';
       },
       hideNavBar: false,
-      renderLeftButton() {
+      renderLeftButton(navigator, index, state) {
+        console.log("Left", navigator, index, state);
         return (
           <Button
-            onPress={() => { console.log('Tapped right button'); }}
+            onPress={() => {
+              let props = navigator.props;
+              if (typeof props.openDrawer === 'function') { props.openDrawer(); }
+            }}
             containerStyle={{ height: 64, width: 64, overflow:'hidden', alignItems: 'center', flex: 1, justifyContent:'center'}}>
             <Icon name="navicon" size={24} color="#5A7EB0" />
           </Button>
