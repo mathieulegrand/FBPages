@@ -8,10 +8,10 @@ import HomeScene    from './homeScene.js';
 import WelcomeScene from './welcomeScene.js';
 
 let Router = {
-  getHomeRoute() {
+  getHomeRoute(profile) {
     return {
-      getSceneClass() {
-        return HomeScene;
+      renderScene()  {
+        return <HomeScene visibilityProfile={profile.visibility}/>;
       },
       getTitle() {
         return 'Page';

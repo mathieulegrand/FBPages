@@ -11,8 +11,8 @@ import Login  from './login.js';
 import { Router } from './router.js'
 
 export default class HomeScene extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     let accountsRequest = new FBSDKGraphRequest(
       this._receiveListOfPages.bind(this),
@@ -23,9 +23,17 @@ export default class HomeScene extends React.Component {
     this.state = {
       currentPageId: '',
       pagesList: [],
+      // can be set to 'published', 'unpublished' or 'all'
+      postsToShow: props.visibilityProfile || 'published',
     };
 
     this.separatorId = 0;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("should?", this.props, nextProps, this.state, nextState);
+    // Here we should decide whether we need to trigger a new fetch of the posts
+    return true;
   }
 
   setPageId(pageId) {
@@ -132,16 +140,16 @@ export default class HomeScene extends React.Component {
         return (
           <Text style={styles.textBox} key={entry.id}>{entry.message}</Text>
         );
-        console.log("status");
+        console.log("status", entry);
         break;
       case "link":
-        console.log("link");
+        console.log("link", entry);
         break;
       case "video":
-        console.log("video");
+        console.log("video", entry);
         break;
       case "offer":
-        console.log("offer");
+        console.log("offer", entry);
         break;
       default:
         console.log("Unknown type "+entry.type);
@@ -171,11 +179,20 @@ export default class HomeScene extends React.Component {
 
   _onFetch(page = 1, callback, options) {
     console.log("Fetch", page, options);
+    let url = '/'+this.state.currentPageId;
+    let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } };
+    if (this.state.postsToShow === 'published') {
+      url += '/feed';
+    } else {
+      url += '/promotable_posts';
+      if (this.state.postsToShow !== 'all') {
+        params['is_published'] = { string: 'false' };
+      }
+    }
     if (this.state.currentPageId.length > 0) {
       let feedRequest = new FBSDKGraphRequest(
         this._receiveFeed.bind(this, callback),
-        '/'+this.state.currentPageId+'/feed',
-        { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } }
+        url, params
       ).start();
     } else {
       alert("No page to fetch");
@@ -212,6 +229,8 @@ const styles = React.StyleSheet.create({
   textBox: {
     padding: 10,
     backgroundColor: '#FFF',
+    fontFamily: 'System',
+    fontSize: 18,
   },
   header: {
     backgroundColor: '#e8e8e8',

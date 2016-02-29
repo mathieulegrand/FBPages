@@ -20,6 +20,7 @@ export default class Root extends React.Component {
     this.state = {
       welcomeScreen: true,   // by default, we want to display the login screen
       selectedTab:   'Page',
+      profile:       { visibility: 'published' },
     };
   }
 
@@ -35,6 +36,11 @@ export default class Root extends React.Component {
     console.log("Navigate", this.refs.navigator);
   }
 
+  setViewSettings(newProfile) {
+    console.log("Set to ", newProfile);
+    this.setState({ profile: newProfile });
+  }
+
   _tabItem(options) {
     return (
       <Icon.TabBarItem title={ options.title }
@@ -42,7 +48,7 @@ export default class Root extends React.Component {
                        onPress={() => { this.setState({ selectedTab: options.title }); }}
                        iconName={ options.iconName }
                        selectedIconName={ options.selectedIconName }>
-        { options.route ? this._navigator(options.route()) : null }
+        { options.route ? this._navigator(options.route(this.state.profile)) : null }
       </Icon.TabBarItem>
     );
   }
@@ -52,7 +58,7 @@ export default class Root extends React.Component {
       <ExNavigator
         ref="navigator"
         showNavigationBar={true}
-        initialRoute={ Router.getHomeRoute() }
+        initialRoute={ Router.getHomeRoute(this.state.profile) }
         style={ styles.navigator }
         sceneStyle={ styles.scene }
         openDrawer={ this.openDrawer }
@@ -83,6 +89,7 @@ export default class Root extends React.Component {
                 tapToClose={true}
                 content={<ControlPanel navigate={this.navigate.bind(this)}
                                        openWelcomeScreen={this.openWelcomeScreen.bind(this)}
+                                       setViewSettings={ this.setViewSettings.bind(this) }
                                        openDrawer={  this.openDrawer.bind(this) }
                                        closeDrawer={ this.closeDrawer.bind(this) }/>}>
           <React.TabBarIOS>

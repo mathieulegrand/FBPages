@@ -12,6 +12,7 @@ export default class ControlPanel extends React.Component {
         <Text style={styles.controlPanelWelcome}>
           Control Panel
         </Text>
+        <Button onPress={ () => {  console.log("a"); this.props.setViewSettings({visibility: 'all'}); }}>Show unpublished posts</Button>
         <Login onLogout={ () => {  this.props.openWelcomeScreen(); }}/>
       </View>
     );
