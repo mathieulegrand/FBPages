@@ -88,8 +88,8 @@ export default class HomeScene extends React.Component {
 
   _renderSectionHeaderView(sectionData, sectionID) {
     return (
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionHeaderTitle}>
           {sectionID}
         </Text>
       </View>
@@ -168,20 +168,22 @@ export default class HomeScene extends React.Component {
 
   _renderHeader() {
     let details = this.state.currentPageDetails;
+    let about   = details.about;
+    if (about.length > 80) {
+      about = about.substring(0,80) + "…";
+    }
     return (
-      <Image source={{uri: details.cover.source}} resizeMode="contain" style={{
-        flex: 1,
-          width: window.width,
-          height: 135,
-        }}>
-        <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'flex-end', margin: 10, }}>
-          <Image source={{uri: details.picture.data.url}} style={{ width: 50, height: 50}}/>
-          <View>
-            <Text style={{ margin: 5, color: 'white', fontWeight: '600', fontSize: 20}}>{details.name}</Text>
-            <Text style={{ margin: 5, color: 'white', fontWeight: '400'}}>{details.about}</Text>
+      <View style={ styles.headerContainerView }>
+        <Image source={{uri: details.cover.source}} resizeMode="cover" style={ styles.headerCoverImage }>
+          <View style={ styles.headerDetailsContainer }>
+            <Image source={{uri: details.picture.data.url}} style={ styles.headerPagePicture }/>
+            <View>
+              <Text style={ styles.headerPageName }>{details.name}</Text>
+              <Text style={ styles.headerPageAbout }>{about}</Text>
+            </View>
           </View>
-        </View>
-      </Image>
+        </Image>
+      </View>
     );
   }
 
@@ -233,6 +235,7 @@ export default class HomeScene extends React.Component {
 
 const styles = React.StyleSheet.create({
   imageBox: {
+
   },
   textBox: {
     padding: 10,
@@ -248,11 +251,11 @@ const styles = React.StyleSheet.create({
     color: "#5A7EB0",
     textDecorationLine: 'underline',
   },
-  header: {
+  sectionHeader: {
     backgroundColor: '#e8e8e8',
     padding: 10,
   },
-  headerTitle: {
+  sectionHeaderTitle: {
     color: '#fff',
     fontWeight: '800',
     textAlign: 'center',
@@ -266,5 +269,46 @@ const styles = React.StyleSheet.create({
   separator: {
     height: 10,
     backgroundColor: '#e8e8e8',
-  }
+  },
+  headerDetailsContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'flex-end',
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,.3)'
+  },
+  headerContainerView: {
+    flex: 1,
+    width: window.width,
+    height: 160,
+    margin: 0, padding: 0,
+  },
+  headerCoverImage: {
+    flex: 1,
+    width: window.width,
+    resizeMode: 'stretch',
+  },
+  headerPagePicture: {
+    position: 'absolute',
+    bottom: 22,
+    left: 10,
+    width: 50,
+    height: 50,
+    borderRadius: 2,
+  },
+  headerPageName: {
+    marginLeft: 55,
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 22,
+    fontFamily: 'System',
+  },
+  headerPageAbout: {
+    marginLeft: 55,
+    color: '#dddddd',
+    fontWeight: '400',
+    fontFamily: 'System',
+    fontSize: 12,
+    fontStyle: 'italic'
+  },
 });
