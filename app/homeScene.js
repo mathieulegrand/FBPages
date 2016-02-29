@@ -3,6 +3,7 @@
 import React, { View, Text, Image } from 'react-native';
 import FBSDKCore, { FBSDKGraphRequest } from 'react-native-fbsdkcore';
 import GiftedListView from 'react-native-gifted-listview';
+import TimeAgo from 'react-native-timeago';
 import Dimensions from 'Dimensions';
 
 var window = Dimensions.get('window');
@@ -25,6 +26,7 @@ export default class HomeScene extends React.Component {
       pagesList: [],
       // can be set to 'published', 'unpublished' or 'all'
       postsToShow: props.visibilityProfile || 'published',
+      insights: {},
     };
 
     this.separatorId = 0;
@@ -70,14 +72,35 @@ export default class HomeScene extends React.Component {
     }
   }
 
+  _receiveInsight(error, result) {
+    if (!error) {
+      for (let entry of result.data) {
+        console.log("Received insight for", entry)
+        this.setState( (previousState, currentProps) => {
+          let newState = previousState;
+          newState[entry.id] = result;
+          return { insights: newState };
+        });
+      }
+    }
+  }
+
   _receiveFeed(callback, error, result) {
     if (!error) {
       let rows = {};
       for (let entry of result.data) {
         // manually parse the date to get the year "2016-02-24T11:22:22+0000",
         let year = entry.created_time.split('-')[0];
+        entry.safe_created_time = entry.created_time.slice(0,19);
         // push or create
         (rows[year] = rows[year] || []).push(entry);
+
+        // Query the insights for each post
+        let insights = new FBSDKGraphRequest(
+          this._receiveInsight.bind(this),
+          '/'+entry.id+'/insights',
+          { fields: { string: 'page_posts_impressions,page_posts_impressions_unique' } }
+        ).start();
       }
       callback(rows);
     } else {
@@ -116,18 +139,27 @@ export default class HomeScene extends React.Component {
   }
 
   _renderRowView(entry) {
-    // console.log("Render",entry);
+    console.log("Render",entry);
+    let contentView = [];
     switch (entry.type) {
       case "photo":
         let uniquify = 0;
+        if (entry.message) {
+          contentView.push(
+            <View key={entry.id+uniquify} style={styles.textBox}>
+              <Text style={styles.text}>{entry.message}</Text>
+            </View>
+          );
+          uniquify++;
+        }
         if (entry.attachments && entry.attachments.data) {
           for (let attachment of entry.attachments.data) {
             if (attachment.media && attachment.media.image) {
-              return this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...attachment.media.image});
+              contentView.push(this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...attachment.media.image}));
               uniquify++;
             } else if (attachment.subattachments && attachment.subattachments.data) {
               for (let subattachment of attachment.subattachments.data) {
-                return this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...subattachment.media.image})
+                contentView.push(this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...subattachment.media.image}));
                 uniquify++;
               }
             }
@@ -137,7 +169,7 @@ export default class HomeScene extends React.Component {
         }
         break;
       case "status":
-        return (
+        contentView.push(
           <View key={entry.id} style={styles.textBox}>
             <Text style={styles.text} key={entry.id}>{entry.message}</Text>
           </View>
@@ -145,7 +177,7 @@ export default class HomeScene extends React.Component {
         console.log("status", entry);
         break;
       case "link":
-        return (
+        contentView.push(
           <View key={entry.id} style={styles.textBox}>
             <Text style={styles.text}>{entry.message}</Text>
             <Text style={styles.link}>{entry.link}</Text>
@@ -163,7 +195,28 @@ export default class HomeScene extends React.Component {
         console.log("Unknown type "+entry.type);
         break;
     }
-    return (<View/>);
+    // spread the components within the row view
+    console.log(entry.from.picture);
+
+    let story    = entry.story || "";
+    let fromName = entry.from.name || "";
+    if (story.indexOf(fromName) === 0) {
+      story = story.slice(fromName.length);
+    }
+    return (
+      <View>
+        <View style={ styles.storyHeader } >
+          <Image source={{uri:entry.from.picture.data.url}} style={ styles.storyFromImage }/>
+          <Text style={ styles.storyDescription }>
+            <Text style={ styles.storyFromName }>{fromName}</Text>
+            <Text style={ styles.storyStory }>{story}</Text>
+          </Text>
+          <TimeAgo style={ styles.storyDate } interval={300000} time={entry.safe_created_time}/>
+        </View>
+        { contentView.map( (item) => { return item; } ) }
+        <Text>{ this.state.insights.hasOwnProperty(entry.id)? "This post has "+this.state.insights[entry.id].page_posts_impressions_unique+" unique impressions." : ""}</Text>
+      </View>
+    );
   }
 
   _renderHeader() {
@@ -225,8 +278,8 @@ export default class HomeScene extends React.Component {
     } else {
       // Empty view while I have no Page to display
       return (
-        <View>
-          <Text style={{textAlign: 'center'}}>No Page to manage</Text>
+        <View style={ styles.textBox }>
+          <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>Nothing yet.</Text>
         </View>
       );
     }
@@ -235,7 +288,37 @@ export default class HomeScene extends React.Component {
 
 const styles = React.StyleSheet.create({
   imageBox: {
-
+  },
+  storyFromImage: {
+    width: 50,
+    height: 50,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  storyDescription: {
+    marginLeft: 50,
+    fontFamily: 'System',
+    fontSize: 14,
+    paddingBottom: 5,
+  },
+  storyHeader: {
+    height: 55,
+    justifyContent: 'center',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  storyFromName: {
+    fontWeight: "600",
+  },
+  storyStory: {
+    fontWeight: "400",
+  },
+  storyDate: {
+    fontFamily: 'System',
+    fontSize: 10,
+    fontWeight: "300",
+    marginLeft: 50,
   },
   textBox: {
     padding: 10,
