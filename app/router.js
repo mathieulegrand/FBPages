@@ -18,7 +18,6 @@ let Router = {
       },
       hideNavBar: false,
       renderLeftButton(navigator, index, state) {
-        console.log("Left", navigator, index, state);
         return (
           <Button
             onPress={() => {

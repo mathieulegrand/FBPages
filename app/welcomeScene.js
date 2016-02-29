@@ -14,9 +14,9 @@ export default class WelcomeScene extends React.Component {
           Pages Manager
         </Text>
         <Login style={styles.login}
-               onLogin={    () => { this.props.navigator.resetTo(Router.getHomeRoute());    } }
-               onLogout={   () => { this.props.navigator.resetTo(Router.getWelcomeRoute()); } }
-               onLoggedIn={ () => { this.props.navigator.resetTo(Router.getHomeRoute());    } }
+               onLogin={    () => { this.props.closeWelcomeScreen();    } }
+               onLogout={   () => { this.props.openWelcomeScreen(); } }
+               onLoggedIn={ () => { this.props.closeWelcomeScreen();    } }
         />
         <Text style={styles.instructions}>
           Connect to post updates to your Facebook Pages and
@@ -31,6 +31,11 @@ const styles = React.StyleSheet.create({
   firstView: {
     flex: 1,
     justifyContent: 'space-between',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   welcome: {
     fontSize: 36,
