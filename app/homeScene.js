@@ -256,6 +256,12 @@ const styles = React.StyleSheet.create({
     color: '#fff',
     fontWeight: '800',
     textAlign: 'center',
+    fontFamily: 'System',
+    fontSize: 18,
+    color: '#a8a8a8',
+    textShadowColor: "#c8c8c8",
+    textShadowOffset: {width: -1, height: -1},
+    textShadowRadius: 1,
   },
   separator: {
     height: 10,
