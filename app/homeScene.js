@@ -31,7 +31,7 @@ export default class HomeScene extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("should?", this.props, nextProps, this.state, nextState);
+    // console.log("should?", this.props, nextProps, this.state, nextState);
     // Here we should decide whether we need to trigger a new fetch of the posts
     return true;
   }
@@ -74,8 +74,8 @@ export default class HomeScene extends React.Component {
     if (!error) {
       let rows = {};
       for (let entry of result.data) {
-        let created_date = new Date(entry.created_time);
-        let year         = created_date.getFullYear();
+        // manually parse the date to get the year "2016-02-24T11:22:22+0000",
+        let year = entry.created_time.split('-')[0];
         // push or create
         (rows[year] = rows[year] || []).push(entry);
       }
@@ -116,7 +116,7 @@ export default class HomeScene extends React.Component {
   }
 
   _renderRowView(entry) {
-    console.log("Render",entry);
+    // console.log("Render",entry);
     switch (entry.type) {
       case "photo":
         let uniquify = 0;
@@ -138,11 +138,19 @@ export default class HomeScene extends React.Component {
         break;
       case "status":
         return (
-          <Text style={styles.textBox} key={entry.id}>{entry.message}</Text>
+          <View key={entry.id} style={styles.textBox}>
+            <Text style={styles.text} key={entry.id}>{entry.message}</Text>
+          </View>
         );
         console.log("status", entry);
         break;
       case "link":
+        return (
+          <View key={entry.id} style={styles.textBox}>
+            <Text style={styles.text}>{entry.message}</Text>
+            <Text style={styles.link}>{entry.link}</Text>
+          </View>
+        );
         console.log("link", entry);
         break;
       case "video":
@@ -178,7 +186,7 @@ export default class HomeScene extends React.Component {
   }
 
   _onFetch(page = 1, callback, options) {
-    console.log("Fetch", page, options);
+    // console.log("Fetch", page, options);
     let url = '/'+this.state.currentPageId;
     let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } };
     if (this.state.postsToShow === 'published') {
@@ -229,8 +237,16 @@ const styles = React.StyleSheet.create({
   textBox: {
     padding: 10,
     backgroundColor: '#FFF',
+  },
+  text: {
     fontFamily: 'System',
     fontSize: 18,
+  },
+  link: {
+    fontFamily: 'System',
+    fontSize: 18,
+    color: "#5A7EB0",
+    textDecorationLine: 'underline',
   },
   header: {
     backgroundColor: '#e8e8e8',

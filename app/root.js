@@ -17,11 +17,17 @@ export default class Root extends React.Component {
   constructor(props) {
     super(props);
 
+    this.defaultTab = 'Page';
+
     this.state = {
       welcomeScreen: true,   // by default, we want to display the login screen
-      selectedTab:   'Page',
+      selectedTab:   this.defaultTab,
       profile:       { visibility: 'published' },
     };
+  }
+
+  gotoDefaultTab() {
+    this.setState({ selectedTab: this.defaultTab });
   }
 
   openWelcomeScreen() {
@@ -53,16 +59,17 @@ export default class Root extends React.Component {
     );
   }
 
-  _navigator() {
+  _navigator(myRoute) {
     return (
       <ExNavigator
         ref="navigator"
         showNavigationBar={true}
-        initialRoute={ Router.getHomeRoute(this.state.profile) }
+        initialRoute={ myRoute }
         style={ styles.navigator }
         sceneStyle={ styles.scene }
-        openDrawer={ this.openDrawer }
-        closeDrawer={ this.closeDrawer }
+        openDrawer={ this.openDrawer.bind(this) }
+        closeDrawer={ this.closeDrawer.bind(this) }
+        gotoDefaultTab={ this.gotoDefaultTab.bind(this) }
         renderNavigationBar={ props => <CustomNavBar {...props} /> }
       />
     );
@@ -87,14 +94,14 @@ export default class Root extends React.Component {
                 styles={{ main: { shadowColor: "#000000", shadowOpacity: 0.4, shadowRadius: 3, } }}
                 tweenHandler={Drawer.tweenPresets.parallax}
                 tapToClose={true}
-                content={<ControlPanel navigate={this.navigate.bind(this)}
-                                       openWelcomeScreen={this.openWelcomeScreen.bind(this)}
+                content={<ControlPanel navigate={ this.navigate.bind(this) }
+                                       openWelcomeScreen={ this.openWelcomeScreen.bind(this) }
                                        setViewSettings={ this.setViewSettings.bind(this) }
                                        openDrawer={  this.openDrawer.bind(this) }
                                        closeDrawer={ this.closeDrawer.bind(this) }/>}>
           <React.TabBarIOS>
-            { this._tabItem({ title: 'Page', iconName: "ios-list-outline", selectedIconName: "ios-list", route: Router.getWelcomeRoute}) }
-            { this._tabItem({ title: 'New Post', iconName: 'ios-plus-outline', selectedIconName: 'ios-plus' })}
+            { this._tabItem({ title: 'Page', iconName: "ios-list-outline", selectedIconName: "ios-list", route: Router.getHomeRoute }) }
+            { this._tabItem({ title: 'New Post', iconName: 'ios-plus-outline', selectedIconName: 'ios-plus', route: Router.getPostRoute })}
           </React.TabBarIOS>
         </Drawer>
       );
