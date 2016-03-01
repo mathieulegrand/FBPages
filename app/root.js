@@ -1,14 +1,22 @@
 'use strict';
 
-import React       from 'react-native';
-import ExNavigator from '@exponent/react-native-navigator';
-import Drawer      from 'react-native-drawer';
-import Icon        from 'react-native-vector-icons/Ionicons';
+import React, { Navigator, Text, TouchableOpacity } from 'react-native';
+import Drawer from 'react-native-drawer';
+import Icon   from 'react-native-vector-icons/Ionicons';
 
-import { Router }   from './router.js';
-import CustomNavBar from './customNavBar.js';
-import ControlPanel from './controlPanel.js';
-import WelcomeScene from './welcomeScene.js';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
+import {
+  getPosts,
+  getPages,
+} from './actions'
+
+import { NavigationBarRouteMapper }   from './router';
+import ControlPanel from './controlPanel';
+import WelcomeScene from './welcomeScene';
+import HomeScene    from './homeScene';
+import PostScene    from './postScene';
 
 export default class Root extends React.Component {
   closeDrawer = () => { this.refs.drawer.close() };
@@ -22,7 +30,6 @@ export default class Root extends React.Component {
     this.state = {
       welcomeScreen: true,   // by default, we want to display the login screen
       selectedTab:   this.defaultTab,
-      profile:       { visibility: 'published' },
     };
   }
 
@@ -42,11 +49,6 @@ export default class Root extends React.Component {
     console.log("Navigate", this.refs.navigator);
   }
 
-  setViewSettings(newProfile) {
-    console.log("Set to ", newProfile);
-    this.setState({ profile: newProfile });
-  }
-
   _tabItem(options) {
     return (
       <Icon.TabBarItem title={ options.title }
@@ -54,25 +56,39 @@ export default class Root extends React.Component {
                        onPress={() => { this.setState({ selectedTab: options.title }); }}
                        iconName={ options.iconName }
                        selectedIconName={ options.selectedIconName }>
-        { options.route ? this._navigator(options.route(this.state.profile)) : null }
+        { options.route ? this._navigator(options.route) : null }
       </Icon.TabBarItem>
     );
   }
 
   _navigator(myRoute) {
     return (
-      <ExNavigator
+      <Navigator
         ref="navigator"
         showNavigationBar={true}
-        initialRoute={ myRoute }
+        initialRoute={ { id: myRoute } }
         style={ styles.navigator }
-        sceneStyle={ styles.scene }
+        renderScene={this.navigatorRenderScene}
         openDrawer={ this.openDrawer.bind(this) }
         closeDrawer={ this.closeDrawer.bind(this) }
         gotoDefaultTab={ this.gotoDefaultTab.bind(this) }
-        renderNavigationBar={ props => <CustomNavBar {...props} /> }
+        sceneStyle={styles.scene}
+        navigationBar={ <Navigator.NavigationBar routeMapper={NavigationBarRouteMapper} style={Navigator.NavigatorNavigationBarStyles}/> }
       />
     );
+  }
+
+  navigatorRenderScene(route, navigator) {
+    console.log(route);
+    switch (route.id) {
+      case 'Home':
+        return (<HomeScene navigator={navigator} visibilityProfile='published'/>);
+      case 'Post':
+        return (<PostScene navigator={navigator}/>);
+      default:
+        console.log("unknown route", route.id);
+    }
+    return null;
   }
 
   render() {
@@ -80,8 +96,7 @@ export default class Root extends React.Component {
     // or the mainScreen showing the Page and the tabs
     if (this.state.welcomeScreen) {
       return (
-        <WelcomeScene style={styles.modal}
-                      openWelcomeScreen={  this.openWelcomeScreen.bind(this) }
+        <WelcomeScene openWelcomeScreen={  this.openWelcomeScreen.bind(this)  }
                       closeWelcomeScreen={ this.closeWelcomeScreen.bind(this) }
         />
       );
@@ -91,23 +106,41 @@ export default class Root extends React.Component {
         <Drawer ref="drawer"
                 openDrawerOffset={0.2}
                 panCloseMask={0.2}
-                styles={{ main: { shadowColor: "#000000", shadowOpacity: 0.4, shadowRadius: 3, } }}
+                styles={{ main: drawerStyle }}
                 tweenHandler={Drawer.tweenPresets.parallax}
                 tapToClose={true}
                 content={<ControlPanel navigate={ this.navigate.bind(this) }
                                        openWelcomeScreen={ this.openWelcomeScreen.bind(this) }
-                                       setViewSettings={ this.setViewSettings.bind(this) }
                                        openDrawer={  this.openDrawer.bind(this) }
                                        closeDrawer={ this.closeDrawer.bind(this) }/>}>
           <React.TabBarIOS>
-            { this._tabItem({ title: 'Page', iconName: "ios-list-outline", selectedIconName: "ios-list", route: Router.getHomeRoute }) }
-            { this._tabItem({ title: 'New Post', iconName: 'ios-plus-outline', selectedIconName: 'ios-plus', route: Router.getPostRoute })}
+            { this._tabItem({ title: 'Page', iconName: "ios-list-outline", selectedIconName: "ios-list", route: 'Home' }) }
+            { this._tabItem({ title: 'New Post', iconName: 'ios-plus-outline', selectedIconName: 'ios-plus', route: 'Post' })}
           </React.TabBarIOS>
         </Drawer>
       );
     }
   }
 }
+
+const stateToProps = (state) => {
+  return {
+    filter: state.filter
+  }
+}
+
+const dispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    getPosts,
+    getPages,
+  }, dispatch)
+}
+
+const drawerStyle = {
+  shadowColor: "#000000",
+  shadowOpacity: 0.4,
+  shadowRadius: 3,
+};
 
 const styles = React.StyleSheet.create({
   container: {

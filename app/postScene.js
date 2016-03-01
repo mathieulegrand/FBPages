@@ -33,6 +33,10 @@ export default class PostScene extends React.Component {
     this.setState({visibleHeight: Dimensions.get('window').height - fixedOffset - tabBarHeight})
   }
 
+  getTitle() {
+    return 'New Post';
+  }
+
   render() {
     return (
       <View style={{height: this.state.visibleHeight}}>

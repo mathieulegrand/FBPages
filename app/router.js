@@ -1,86 +1,75 @@
 'use strict';
 
-import React, { View } from 'react-native';
-import Button from 'react-native-button';
+import React, { View, TouchableOpacity, Text, Navigator } from 'react-native';
 import Icon   from 'react-native-vector-icons/Ionicons';
 
-import HomeScene    from './homeScene.js';
-import PostScene    from './postScene.js';
-import WelcomeScene from './welcomeScene.js';
+import HomeScene    from './homeScene';
+import PostScene    from './postScene';
 
-let Router = {
-  getHomeRoute(profile) {
-    return {
-      renderScene()  {
-        return <HomeScene visibilityProfile={profile.visibility}/>;
-      },
-      getTitle() {
-        return 'Page';
-      },
-      hideNavBar: false,
-      renderLeftButton(navigator, index, state) {
+let NavigationBarRouteMapper = {
+  LeftButton(route, navigator, index, navState) {
+    switch (route.id) {
+      case 'Home':
         return (
-          <Button
+          <TouchableOpacity
             onPress={() => {
               let props = navigator.props;
               if (typeof props.openDrawer === 'function') { props.openDrawer(); }
             }}
-            containerStyle={styles.leftButtonContainer}>
+            style={styles.buttonContainer}>
             <Icon name="navicon-round" size={24} color="#5A7EB0" />
-          </Button>
+          </TouchableOpacity>
         );
-      },
-    };
-  },
-
-  getPostRoute() {
-    return {
-      getSceneClass() {
-        return PostScene;
-      },
-      getTitle() {
-        return 'New Post';
-      },
-      hideNavBar: false,
-      renderLeftButton(navigator, index, state) {
+      case 'Post':
         return (
-          <Button onPress={() => { typeof navigator.props.gotoDefaultTab === 'function' ? navigator.props.gotoDefaultTab() : null } }
-                  containerStyle={styles.leftButtonContainer}
-                  style={styles.button}>
-            Cancel
-          </Button>
+          <TouchableOpacity onPress={() => { typeof navigator.props.gotoDefaultTab === 'function' ? navigator.props.gotoDefaultTab() : null } }
+                  style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
         );
-      },
-    };
+    }
+    return null;
   },
-
-  getWelcomeRoute() {
-    return {
-      getSceneClass() {
-        return WelcomeScene;
-      },
-      getTitle() {
-        return 'Welcome';
-      },
-      hideNavBar: true,
-    };
+  RightButton(route, navigator, index, navState) {
+    return null;
+  },
+  Title(route, navigator, index, navState) {
+    return (
+      <View style={styles.navBarTitle}>
+        <React.Text style={styles.navBarTitleText}>
+          { route.id === 'Home' ? 'Page' : 'New Post' }
+        </React.Text>
+      </View>
+    );
   },
 };
 
-export { Router };
+export { NavigationBarRouteMapper };
 
 const styles = React.StyleSheet.create({
-  leftButtonContainer: {
+  buttonContainer: {
     height: 64,
     width: 64,
     overflow:'hidden',
     alignItems: 'center',
     flex: 1,
-    justifyContent:'center'
+    justifyContent:'center',
   },
-  button: {
+  buttonText: {
+    marginLeft: 5,
     fontFamily: 'System',
     fontWeight: '400',
+    fontSize:   16,
+    color: '#5A7EB0',
   },
+  navBarTitle:{
+    justifyContent:'center',
+    flex:1
+  },
+  navBarTitleText:{
+    fontFamily: 'System',
+    fontWeight: '500',
+    fontSize:   18,
+  }
 });
 

@@ -2,8 +2,8 @@
 
 import React, { View, Text } from 'react-native';
 
-import Login  from './login.js';
-import { Router } from './router.js'
+import Login  from './login';
+import { Router } from './router'
 
 export default class WelcomeScene extends React.Component {
   render() {

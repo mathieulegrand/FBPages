@@ -262,6 +262,10 @@ export default class HomeScene extends React.Component {
     }
   }
 
+  getTitle() {
+    return 'Page';
+  }
+
   render() {
     if (this.state.currentPageId.length > 0) {
       return (
@@ -299,8 +303,9 @@ const styles = React.StyleSheet.create({
   storyDescription: {
     marginLeft: 50,
     fontFamily: 'System',
-    fontSize: 14,
+    fontSize: 16,
     paddingBottom: 5,
+    marginRight: 10,
   },
   storyHeader: {
     height: 55,
@@ -316,7 +321,7 @@ const styles = React.StyleSheet.create({
   },
   storyDate: {
     fontFamily: 'System',
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "300",
     marginLeft: 50,
   },

@@ -1,9 +1,8 @@
 'use strict';
 
-import React, { View, Text, Image } from 'react-native';
-import Button from 'react-native-button';
+import React, { View, Text, Image, TouchableOpacity } from 'react-native';
 
-import Login  from './login.js';
+import Login  from './login';
 
 export default class ControlPanel extends React.Component {
   render() {
@@ -12,7 +11,9 @@ export default class ControlPanel extends React.Component {
         <Text style={styles.controlPanelWelcome}>
           Control Panel
         </Text>
-        <Button onPress={ () => {  console.log("a"); this.props.setViewSettings({visibility: 'all'}); }}>Show unpublished posts</Button>
+        <TouchableOpacity onPress={ () => {  console.log("a"); }} style={ styles.buttonContainer }>
+          <Text>Show unpublished posts</Text>
+        </TouchableOpacity>
         <Login onLogout={ () => {  this.props.openWelcomeScreen(); }}/>
       </View>
     );
@@ -25,6 +26,9 @@ const styles = React.StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 25,
+  },
+  buttonContainer: {
+    margin: 10,
   },
   controlPanelWelcome: {
     fontSize: 20,
