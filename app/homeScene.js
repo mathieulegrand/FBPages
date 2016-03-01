@@ -3,12 +3,12 @@
 import React, { View, Text, Image } from 'react-native';
 import FBSDKCore, { FBSDKGraphRequest } from 'react-native-fbsdkcore';
 import GiftedListView from 'react-native-gifted-listview';
-import TimeAgo from 'react-native-timeago';
 import Dimensions from 'Dimensions';
 
 var window = Dimensions.get('window');
 
 import Login  from './login.js';
+import TimeAgo from './timeago';
 import { Router } from './router.js'
 
 export default class HomeScene extends React.Component {

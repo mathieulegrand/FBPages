@@ -6,15 +6,15 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
+    "moment": "^2.11.2",
     "react-native": "^0.20.0",
-    "react-redux": "^4.4.0",
-    "redux": "^3.3.1",
+    "react-native-drawer": "^1.16.7",
     "react-native-fbsdkcore": "0.0.8",
     "react-native-fbsdklogin": "0.0.8",
     "react-native-fbsdkshare": "0.0.8",
     "react-native-gifted-listview": "0.0.12",
-    "react-native-drawer": "^1.16.7",
-    "react-native-timeago": "^0.2.0",
-    "react-native-vector-icons": "^1.2.1"
+    "react-native-vector-icons": "^1.2.1",
+    "react-redux": "^4.4.0",
+    "redux": "^3.3.1"
   }
 }

@@ -3,8 +3,8 @@
 import React, { View, TouchableOpacity, Text, Navigator } from 'react-native';
 import Icon   from 'react-native-vector-icons/Ionicons';
 
-import HomeScene    from './homeScene';
-import PostScene    from './postScene';
+import HomeScene from './homeScene';
+import PostScene from './postScene';
 
 let NavigationBarRouteMapper = {
   LeftButton(route, navigator, index, navState) {

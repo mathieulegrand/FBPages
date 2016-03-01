@@ -26,7 +26,6 @@ export default class Root extends React.Component {
     super(props);
 
     this.defaultTab = 'Page';
-
     this.state = {
       welcomeScreen: true,   // by default, we want to display the login screen
       selectedTab:   this.defaultTab,
@@ -43,10 +42,6 @@ export default class Root extends React.Component {
 
   closeWelcomeScreen() {
     this.setState({ welcomeScreen: false });
-  }
-
-  navigate(route) {
-    console.log("Navigate", this.refs.navigator);
   }
 
   _tabItem(options) {
@@ -109,8 +104,7 @@ export default class Root extends React.Component {
                 styles={{ main: drawerStyle }}
                 tweenHandler={Drawer.tweenPresets.parallax}
                 tapToClose={true}
-                content={<ControlPanel navigate={ this.navigate.bind(this) }
-                                       openWelcomeScreen={ this.openWelcomeScreen.bind(this) }
+                content={<ControlPanel openWelcomeScreen={ this.openWelcomeScreen.bind(this) }
                                        openDrawer={  this.openDrawer.bind(this) }
                                        closeDrawer={ this.closeDrawer.bind(this) }/>}>
           <React.TabBarIOS>
