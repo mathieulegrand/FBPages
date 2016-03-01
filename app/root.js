@@ -73,7 +73,7 @@ export default class Root extends React.Component {
         closeDrawer={ this.closeDrawer.bind(this) }
         gotoDefaultTab={ this.gotoDefaultTab.bind(this) }
         sceneStyle={styles.scene}
-        navigationBar={ <Navigator.NavigationBar routeMapper={NavigationBarRouteMapper} style={Navigator.NavigatorNavigationBarStyles}/> }
+        navigationBar={ <Navigator.NavigationBar routeMapper={NavigationBarRouteMapper} style={styles.navBar}/> }
       />
     );
   }
@@ -148,6 +148,11 @@ const styles = React.StyleSheet.create({
   },
   navigator: {
     flex: 1,
+  },
+  navBar:{
+    backgroundColor: '#f8f8f8',
+    borderBottomColor: '#c8c8c8',
+    borderBottomWidth: 1
   },
   scene: {
     paddingTop: 64,
