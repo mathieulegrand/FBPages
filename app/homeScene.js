@@ -144,7 +144,6 @@ export default class HomeScene extends React.Component {
   }
 
   _renderRowView(entry) {
-    //console.log("Render",entry);
     let contentView = [];
     switch (entry.type) {
       case "photo":
@@ -179,16 +178,20 @@ export default class HomeScene extends React.Component {
             <Text style={styles.text} key={entry.id}>{entry.message}</Text>
           </View>
         );
-        //console.log("status", entry);
         break;
       case "link":
         contentView.push(
           <View key={entry.id} style={styles.textBox}>
-            <Text style={styles.text}>{entry.message}</Text>
-            <React.TouchableOpacity onPress={() => {this._safariView(entry.link)}}><Text style={styles.link}>{entry.link}</Text></React.TouchableOpacity>
+            <Text style={styles.text}>
+              {entry.message}
+            </Text>
+            <React.TouchableOpacity onPress={() => { this._safariView(entry.link) }}>
+              <Text style={styles.link}>
+                {entry.link}
+              </Text>
+            </React.TouchableOpacity>
           </View>
         );
-        // console.log("link", entry);
         break;
       case "video":
         console.log("video", entry);
@@ -200,8 +203,6 @@ export default class HomeScene extends React.Component {
         console.log("Unknown type "+entry.type);
         break;
     }
-    // spread the components within the row view
-    //console.log(entry.from.picture);
 
     let story    = entry.story || "";
     let fromName = entry.from.name || "";
