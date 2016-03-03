@@ -6,8 +6,8 @@ import React,      { StyleSheet, View } from 'react-native'
 import FBSDKLogin, { FBSDKLoginButton } from 'react-native-fbsdklogin'
 
 // -- Redux store related
-import { connect }           from 'react-redux'
-import * as actionCreators   from './actions';
+import { connect }         from 'react-redux'
+import * as actionCreators from './actions'
 
 class Login extends React.Component {
   render() {

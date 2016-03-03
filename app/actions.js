@@ -79,6 +79,7 @@ export function pageinfo(pageid) {
   return dispatch => {
     dispatch(pageinfoFetch())
     facebookAPI.pageDetails(pageid).then((pageDetails) => {
+      console.log("detauks", pageDetails);
       dispatch(pageinfoFetchSuccess(pageDetails))
     }).catch((error) => {
       dispatch(pageinfoFetchFailure(error))

@@ -8,11 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* FBPagesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FBPagesTests.m */; };
+		0DB7D1E6DC89484D9E71A8C3 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 70615F929D5A4B909FB038FC /* Zocial.ttf */; };
 		12B4969895CE557A78A581EB /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0882E13D751F934727761D58 /* libPods.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		23EA3B6709E7407CBBFA3470 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F196BF4CD64C401C84E1C4C6 /* MaterialIcons.ttf */; };
+		26DE70B1E30041E1A378F100 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFB6862DC94E45FCACB18E81 /* Ionicons.ttf */; };
+		49512D78AD764F0EBFE469E0 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4748A44F641E465789559FFB /* Entypo.ttf */; };
+		4A8AC122C5764DF1A955B237 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 07790FFF20BA4161A8FED356 /* Foundation.ttf */; };
+		55A898AC0F6B4DB69A6DFFAF /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 85545B4965564A20A000FDEF /* FontAwesome.ttf */; };
+		9E72DB9696C44D88A5A7B1BC /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5AB970815128485A96F5450A /* EvilIcons.ttf */; };
+		C04AF7A9FFF642DEB3AA7B4A /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B67B617E87324E9288BBA8B9 /* Octicons.ttf */; };
+		C8D5981AE0314029914C5944 /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01E714EA77EF40D48D063D42 /* libSafariViewManager.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +32,13 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = FBPages;
 		};
+		344A4D871C88860B00A6F19D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2BC7E795DD1042FEAB99A0AA /* SafariViewManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = SafariViewManager;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +46,8 @@
 		00E356EE1AD99517003FC87E /* FBPagesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FBPagesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* FBPagesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FBPagesTests.m; sourceTree = "<group>"; };
+		01E714EA77EF40D48D063D42 /* libSafariViewManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSafariViewManager.a; sourceTree = "<group>"; };
+		07790FFF20BA4161A8FED356 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		0882E13D751F934727761D58 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* FBPages.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FBPages.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = FBPages/AppDelegate.h; sourceTree = "<group>"; };
@@ -39,7 +57,15 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FBPages/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = FBPages/main.m; sourceTree = "<group>"; };
 		143890CE05A31F33FECB1035 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		2BC7E795DD1042FEAB99A0AA /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
+		4748A44F641E465789559FFB /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		5AB970815128485A96F5450A /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		70615F929D5A4B909FB038FC /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		85545B4965564A20A000FDEF /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		B67B617E87324E9288BBA8B9 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		DED0728563774FBDE3364FD9 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		DFB6862DC94E45FCACB18E81 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		F196BF4CD64C401C84E1C4C6 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				12B4969895CE557A78A581EB /* libPods.a in Frameworks */,
+				C8D5981AE0314029914C5944 /* libSafariViewManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,9 +119,33 @@
 			name = FBPages;
 			sourceTree = "<group>";
 		};
+		344A4D761C88860A00A6F19D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				344A4D881C88860B00A6F19D /* libSafariViewManager.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81A25680185F43A9AEB48585 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4748A44F641E465789559FFB /* Entypo.ttf */,
+				5AB970815128485A96F5450A /* EvilIcons.ttf */,
+				85545B4965564A20A000FDEF /* FontAwesome.ttf */,
+				07790FFF20BA4161A8FED356 /* Foundation.ttf */,
+				DFB6862DC94E45FCACB18E81 /* Ionicons.ttf */,
+				F196BF4CD64C401C84E1C4C6 /* MaterialIcons.ttf */,
+				B67B617E87324E9288BBA8B9 /* Octicons.ttf */,
+				70615F929D5A4B909FB038FC /* Zocial.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				2BC7E795DD1042FEAB99A0AA /* SafariViewManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -108,6 +159,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				A2158F7B1C17E1BC26BA5E7C /* Pods */,
 				FF30B524A4C6E610E9D03EAF /* Frameworks */,
+				81A25680185F43A9AEB48585 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -187,7 +239,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 610;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -210,6 +262,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 344A4D761C88860A00A6F19D /* Products */;
+					ProjectRef = 2BC7E795DD1042FEAB99A0AA /* SafariViewManager.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* FBPages */,
@@ -217,6 +275,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		344A4D881C88860B00A6F19D /* libSafariViewManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSafariViewManager.a;
+			remoteRef = 344A4D871C88860B00A6F19D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
@@ -232,6 +300,14 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				49512D78AD764F0EBFE469E0 /* Entypo.ttf in Resources */,
+				9E72DB9696C44D88A5A7B1BC /* EvilIcons.ttf in Resources */,
+				55A898AC0F6B4DB69A6DFFAF /* FontAwesome.ttf in Resources */,
+				4A8AC122C5764DF1A955B237 /* Foundation.ttf in Resources */,
+				26DE70B1E30041E1A378F100 /* Ionicons.ttf in Resources */,
+				23EA3B6709E7407CBBFA3470 /* MaterialIcons.ttf in Resources */,
+				C04AF7A9FFF642DEB3AA7B4A /* Octicons.ttf in Resources */,
+				0DB7D1E6DC89484D9E71A8C3 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +431,14 @@
 				INFOPLIST_FILE = FBPagesTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FBPages.app/FBPages";
 			};
@@ -372,6 +456,14 @@
 				INFOPLIST_FILE = FBPagesTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FBPages.app/FBPages";
 			};
@@ -388,6 +480,11 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkcore/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdklogin/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkshare/iOS",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = FBPages/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -411,6 +508,11 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkcore/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdklogin/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkshare/iOS",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				INFOPLIST_FILE = FBPages/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -462,6 +564,11 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkcore/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdklogin/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkshare/iOS",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -502,6 +609,11 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkcore/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdklogin/iOS",
+					"$(SRCROOT)/../node_modules/react-native-fbsdkshare/iOS",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

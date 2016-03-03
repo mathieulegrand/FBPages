@@ -7,7 +7,7 @@ import Icon   from 'react-native-vector-icons/Ionicons'
 
 // -- Redux store related
 import { connect }         from 'react-redux'
-import * as actionCreators from './actions';
+import * as actionCreators from './actions'
 
 // -- My components
 import NavBarRouteMapper from './router'

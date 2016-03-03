@@ -34,7 +34,7 @@ export const getInfo  = () =>
   graphRequest('/me', { fields: { string: 'name,picture.width(300)' } })
 
 export const accounts = () =>
-  graphRequest('/me/accounts', { fields: { string: 'id,name' } })
+  graphRequest('/me/accounts', { fields: { string: 'id,name,picture' } })
 
 export const pageDetails  = (pageId) =>
   graphRequest(`/${pageId}`, { fields: { string: 'name,about,category,cover,description,general_info,likes,new_like_count,picture' } })
