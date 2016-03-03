@@ -5,25 +5,30 @@
 import React,      { StyleSheet, View } from 'react-native'
 import FBSDKLogin, { FBSDKLoginButton } from 'react-native-fbsdklogin'
 
-export default class Login extends React.Component {
+// -- Redux store related
+import { connect }           from 'react-redux'
+import * as actionCreators   from './actions';
+
+class Login extends React.Component {
   render() {
+    const { dispatch, login } = this.props
     return (
       <View style={this.props.style}>
         <FBSDKLoginButton
           style={styles.loginButton}
           onLoginFinished={(error, result) => {
             if (error) {
-              this.props.onLoginFailure();
+              dispatch(actionCreators.loginFailure());
             } else {
               if (result.isCancelled) {
-                this.props.onLoginFailure();
+                dispatch(actionCreators.loginFailure());
               } else {
-                this.props.onLoginSuccess();
+                dispatch(actionCreators.loginSuccess());
               }
             }
           }}
           onLogoutFinished={() => {
-            this.props.onLogoutSuccess();
+            dispatch(actionCreators.logoutSuccess());
           }}
           readPermissions={ this.props.readPermissions }
           publishPermissions={ this.props.publishPermissions }/>
@@ -33,9 +38,8 @@ export default class Login extends React.Component {
 }
 
 Login.propTypes = {
-  onLoginFailure:     React.PropTypes.func.isRequired,
-  onLoginSuccess:     React.PropTypes.func.isRequired,
-  onLogoutSuccess:    React.PropTypes.func.isRequired,
+  dispatch:           React.PropTypes.func.isRequired,
+  login:              React.PropTypes.object,
   readPermissions:    React.PropTypes.array,
   publishPermissions: React.PropTypes.array,
 }
@@ -44,6 +48,10 @@ Login.defaultProps = {
   readPermissions:    [],
   publishPermissions: [],
 }
+
+const mapStateToProps = (state) => { return { login: state.login } }
+
+export default connect(mapStateToProps)(Login);
 
 const styles = React.StyleSheet.create({
   loginButton: {

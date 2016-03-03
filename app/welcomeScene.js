@@ -1,39 +1,26 @@
-'use strict';
+'use strict'
 
-import React, { View, Text } from 'react-native';
-
-import Login  from './login';
-import { Router } from './router'
+import React from 'react-native'
+import Login from './login'
 
 export default class WelcomeScene extends React.Component {
   render() {
-    const { login } = this.props
-    console.log("Welcome", login);
     return (
-      <View style={styles.firstView}>
-        <Text style={styles.welcome}>
+      <React.View style={styles.firstView}>
+        <React.Text style={styles.welcome}>
           Welcome to{'\n'}
           Pages Manager
-        </Text>
+        </React.Text>
         <Login style={styles.login}
-               onLoginFailure={  () => { this.props.onLoginSuccess();  } }
-               onLogoutSuccess={ () => { this.props.onLogoutSuccess(); } }
-               onLoginSuccess={  () => { this.props.onLoginSuccess();  } }
-               publishPermissions={ [ 'manage_pages' ] }
+                     publishPermissions={ [ 'manage_pages' ] }
         />
-        <Text style={styles.instructions}>
+        <React.Text style={styles.instructions}>
           Connect to post updates to your Facebook Pages and
           see the number of people that have viewed your posts.
-        </Text>
-      </View>
+        </React.Text>
+      </React.View>
     );
   }
-}
-
-WelcomeScene.propTypes = {
-  onLoginFailure:     React.PropTypes.func.isRequired,
-  onLoginSuccess:     React.PropTypes.func.isRequired,
-  onLogoutSuccess:    React.PropTypes.func.isRequired,
 }
 
 const styles = React.StyleSheet.create({

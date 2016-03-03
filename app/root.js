@@ -6,10 +6,8 @@ import Drawer from 'react-native-drawer'
 import Icon   from 'react-native-vector-icons/Ionicons'
 
 // -- Redux store related
-import { bindActionCreators } from 'redux';
-import { connect }            from 'react-redux'
-
-import * as actionCreators    from './actions';
+import { connect }         from 'react-redux'
+import * as actionCreators from './actions';
 
 // -- My components
 import NavBarRouteMapper from './router'
@@ -95,12 +93,7 @@ class Root extends React.Component {
 
     // If we are not logged in, display a welcome / login screen
     if (! login.success) {
-      return (
-        <WelcomeScene onLoginFailure={  () => { dispatch(actionCreators.loginFailure()) } }
-                      onLoginSuccess={  () => { dispatch(actionCreators.loginSuccess()) } }
-                      onLogoutSuccess={ () => { dispatch(actionCreators.logoutSuccess())} }
-        />
-      );
+      return ( <WelcomeScene/> );
     } else {
       return (
         <Drawer ref="drawer"
