@@ -14,7 +14,6 @@ export default class ControlPanel extends React.Component {
         <TouchableOpacity onPress={ () => {  console.log("a"); }} style={ styles.buttonContainer }>
           <Text>Show unpublished posts</Text>
         </TouchableOpacity>
-        <Login onLogout={ () => {  this.props.openWelcomeScreen(); }}/>
       </View>
     );
   }

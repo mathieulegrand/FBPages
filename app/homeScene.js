@@ -305,6 +305,7 @@ const styles = React.StyleSheet.create({
     fontFamily: 'System',
     fontSize: 16,
     paddingBottom: 5,
+    paddingTop: 5,
     marginRight: 10,
   },
   storyHeader: {

@@ -6,7 +6,7 @@ import Icon   from 'react-native-vector-icons/Ionicons';
 import HomeScene from './homeScene';
 import PostScene from './postScene';
 
-let NavigationBarRouteMapper = {
+let NavBarRouteMapper = {
   LeftButton(route, navigator, index, navState) {
     switch (route.id) {
       case 'Home':
@@ -44,7 +44,7 @@ let NavigationBarRouteMapper = {
   },
 };
 
-export { NavigationBarRouteMapper };
+export default NavBarRouteMapper;
 
 const styles = React.StyleSheet.create({
   buttonContainer: {

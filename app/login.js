@@ -1,24 +1,11 @@
 // Facebook Login component
 
-'use strict';
+'use strict'
 
-import React, { StyleSheet, View } from 'react-native';
-
-import FBSDKCore,  { FBSDKAccessToken } from 'react-native-fbsdkcore';
-import FBSDKLogin, { FBSDKLoginButton, FBSDKLoginManager } from 'react-native-fbsdklogin';
-
-import { Router } from './router.js';
+import React,      { StyleSheet, View } from 'react-native'
+import FBSDKLogin, { FBSDKLoginButton } from 'react-native-fbsdklogin'
 
 export default class Login extends React.Component {
-  componentWillMount() {
-    FBSDKAccessToken.getCurrentAccessToken((token) => {
-      if (token && typeof this.props.onLoggedIn === 'function') {
-        // we already are logged in, invoke the special action if defined
-        this.props.onLoggedIn();
-      }
-    });
-  }
-
   render() {
     return (
       <View style={this.props.style}>
@@ -26,26 +13,36 @@ export default class Login extends React.Component {
           style={styles.loginButton}
           onLoginFinished={(error, result) => {
             if (error) {
-              alert('Error while logging in.');
-              console.log(error);
+              this.props.onLoginFailure();
             } else {
               if (result.isCancelled) {
-                alert('Login cancelled.');
-              } else if (typeof this.props.onLogin === 'function') {
-                this.props.onLogin();
+                this.props.onLoginFailure();
+              } else {
+                this.props.onLoginSuccess();
               }
             }
           }}
           onLogoutFinished={() => {
-            if (typeof this.props.onLogout === 'function') {
-              this.props.onLogout();
-            }
+            this.props.onLogoutSuccess();
           }}
-          readPermissions={[ ]}
-          publishPermissions={[ 'manage_pages' ]}/>
+          readPermissions={ this.props.readPermissions }
+          publishPermissions={ this.props.publishPermissions }/>
       </View>
     );
   }
+}
+
+Login.propTypes = {
+  onLoginFailure:     React.PropTypes.func.isRequired,
+  onLoginSuccess:     React.PropTypes.func.isRequired,
+  onLogoutSuccess:    React.PropTypes.func.isRequired,
+  readPermissions:    React.PropTypes.array,
+  publishPermissions: React.PropTypes.array,
+}
+
+Login.defaultProps = {
+  readPermissions:    [],
+  publishPermissions: [],
 }
 
 const styles = React.StyleSheet.create({

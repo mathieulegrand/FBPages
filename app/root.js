@@ -1,24 +1,25 @@
-'use strict';
+'use strict'
 
-import React, { Navigator, Text, TouchableOpacity } from 'react-native';
-import Drawer from 'react-native-drawer';
-import Icon   from 'react-native-vector-icons/Ionicons';
+// -- React components
+import React  from 'react-native'
+import Drawer from 'react-native-drawer'
+import Icon   from 'react-native-vector-icons/Ionicons'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// -- Redux store related
+import { bindActionCreators } from 'redux';
+import { connect }            from 'react-redux'
 
-import {
-  getPosts,
-  getPages,
-} from './actions'
+import * as actionCreators    from './actions';
 
-import { NavigationBarRouteMapper }   from './router';
-import ControlPanel from './controlPanel';
-import WelcomeScene from './welcomeScene';
-import HomeScene    from './homeScene';
-import PostScene    from './postScene';
+// -- My components
+import NavBarRouteMapper from './router'
+import ControlPanel      from './controlPanel'
+import WelcomeScene      from './welcomeScene'
+import HomeScene         from './homeScene'
+import PostScene         from './postScene'
+import LoadingScene      from './loadingScene'
 
-export default class Root extends React.Component {
+class Root extends React.Component {
   closeDrawer = () => { this.refs.drawer.close() };
   openDrawer  = () => { this.refs.drawer.open()  };
 
@@ -26,22 +27,14 @@ export default class Root extends React.Component {
     super(props);
 
     this.defaultTab = 'Page';
+
     this.state = {
-      welcomeScreen: true,   // by default, we want to display the login screen
-      selectedTab:   this.defaultTab,
+      selectedTab: this.defaultTab,
     };
   }
 
   gotoDefaultTab() {
     this.setState({ selectedTab: this.defaultTab });
-  }
-
-  openWelcomeScreen() {
-    this.setState({ welcomeScreen: true });
-  }
-
-  closeWelcomeScreen() {
-    this.setState({ welcomeScreen: false });
   }
 
   _tabItem(options) {
@@ -58,23 +51,22 @@ export default class Root extends React.Component {
 
   _navigator(myRoute) {
     return (
-      <Navigator
+      <React.Navigator
         ref="navigator"
         showNavigationBar={true}
         initialRoute={ { id: myRoute } }
         style={ styles.navigator }
-        renderScene={this.navigatorRenderScene}
+        renderScene={ this.navigatorRenderScene }
         openDrawer={ this.openDrawer.bind(this) }
-        closeDrawer={ this.closeDrawer.bind(this) }
         gotoDefaultTab={ this.gotoDefaultTab.bind(this) }
-        sceneStyle={styles.scene}
-        navigationBar={ <Navigator.NavigationBar routeMapper={NavigationBarRouteMapper} style={styles.navBar}/> }
+        sceneStyle={ styles.scene }
+        navigationBar={ <React.Navigator.NavigationBar routeMapper={NavBarRouteMapper}
+                                                       style={styles.navBar}/> }
       />
     );
   }
 
   navigatorRenderScene(route, navigator) {
-    console.log(route);
     switch (route.id) {
       case 'Home':
         return (<HomeScene navigator={navigator} visibilityProfile='published'/>);
@@ -86,17 +78,30 @@ export default class Root extends React.Component {
     return null;
   }
 
+  componentWillMount() {
+    const { dispatch, login } = this.props
+
+    // try to do a profile info request, to test if we are logged in
+    // if we are, the state will be set to login.success by the action
+    dispatch(actionCreators.getinfo());
+  }
+
   render() {
-    // The main View contains either the Welcome / Login window (if this.state.welcomeScreen is true),
-    // or the mainScreen showing the Page and the tabs
-    if (this.state.welcomeScreen) {
+    const { dispatch, login, accounts } = this.props
+
+    if (login.requesting) {
+      return (<LoadingScene textMessage="Connecting to Facebook…"/>);
+    }
+
+    // If we are not logged in, display a welcome / login screen
+    if (! login.success) {
       return (
-        <WelcomeScene openWelcomeScreen={  this.openWelcomeScreen.bind(this)  }
-                      closeWelcomeScreen={ this.closeWelcomeScreen.bind(this) }
+        <WelcomeScene onLoginFailure={  () => { dispatch(actionCreators.loginFailure()) } }
+                      onLoginSuccess={  () => { dispatch(actionCreators.loginSuccess()) } }
+                      onLogoutSuccess={ () => { dispatch(actionCreators.logoutSuccess())} }
         />
       );
     } else {
-      // this.state.welcomeScreen is false, draw the main "logged in" screen
       return (
         <Drawer ref="drawer"
                 openDrawerOffset={0.2}
@@ -104,12 +109,17 @@ export default class Root extends React.Component {
                 styles={{ main: drawerStyle }}
                 tweenHandler={Drawer.tweenPresets.parallax}
                 tapToClose={true}
-                content={<ControlPanel openWelcomeScreen={ this.openWelcomeScreen.bind(this) }
-                                       openDrawer={  this.openDrawer.bind(this) }
-                                       closeDrawer={ this.closeDrawer.bind(this) }/>}>
+                content={<ControlPanel />}>
           <React.TabBarIOS>
-            { this._tabItem({ title: 'Page', iconName: "ios-list-outline", selectedIconName: "ios-list", route: 'Home' }) }
-            { this._tabItem({ title: 'New Post', iconName: 'ios-plus-outline', selectedIconName: 'ios-plus', route: 'Post' })}
+            { this._tabItem({ title:            'Page',
+                              iconName:         'ios-list-outline',
+                              selectedIconName: 'ios-list',
+                              route:            'Home' }) }
+
+            { this._tabItem({ title:            'New Post',
+                              iconName:         'ios-plus-outline',
+                              selectedIconName: 'ios-plus',
+                              route:            'Post' })}
           </React.TabBarIOS>
         </Drawer>
       );
@@ -117,18 +127,20 @@ export default class Root extends React.Component {
   }
 }
 
-const stateToProps = (state) => {
+Root.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
+  login:    React.PropTypes.object,
+  accounts: React.PropTypes.array,
+}
+
+const mapStateToProps = (state) => {
   return {
-    filter: state.filter
+    login:    state.login,
+    accounts: state.accounts,
   }
 }
 
-const dispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    getPosts,
-    getPages,
-  }, dispatch)
-}
+export default connect(mapStateToProps)(Root);
 
 const drawerStyle = {
   shadowColor: "#000000",

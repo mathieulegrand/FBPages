@@ -7,6 +7,8 @@ import { Router } from './router'
 
 export default class WelcomeScene extends React.Component {
   render() {
+    const { login } = this.props
+    console.log("Welcome", login);
     return (
       <View style={styles.firstView}>
         <Text style={styles.welcome}>
@@ -14,9 +16,10 @@ export default class WelcomeScene extends React.Component {
           Pages Manager
         </Text>
         <Login style={styles.login}
-               onLogin={    () => { this.props.closeWelcomeScreen();    } }
-               onLogout={   () => { this.props.openWelcomeScreen(); } }
-               onLoggedIn={ () => { this.props.closeWelcomeScreen();    } }
+               onLoginFailure={  () => { this.props.onLoginSuccess();  } }
+               onLogoutSuccess={ () => { this.props.onLogoutSuccess(); } }
+               onLoginSuccess={  () => { this.props.onLoginSuccess();  } }
+               publishPermissions={ [ 'manage_pages' ] }
         />
         <Text style={styles.instructions}>
           Connect to post updates to your Facebook Pages and
@@ -25,6 +28,12 @@ export default class WelcomeScene extends React.Component {
       </View>
     );
   }
+}
+
+WelcomeScene.propTypes = {
+  onLoginFailure:     React.PropTypes.func.isRequired,
+  onLoginSuccess:     React.PropTypes.func.isRequired,
+  onLogoutSuccess:    React.PropTypes.func.isRequired,
 }
 
 const styles = React.StyleSheet.create({

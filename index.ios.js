@@ -11,13 +11,13 @@
 **/
 'use strict';
 
-import React from 'react-native';
-import Root  from './app/root.js';
-import { Provider }    from 'react-redux'
-import { createStore } from 'redux'
-import rootReducer     from './app/reducers'
+import React        from 'react-native'
+import { Provider } from 'react-redux'
 
-const store = createStore(rootReducer)
+import configureStore from './app/configureStore'
+import Root           from './app/root'
+
+const store = configureStore()
 
 export default class FBPages extends React.Component {
   render() {
@@ -25,7 +25,7 @@ export default class FBPages extends React.Component {
       <Provider store={store}>
         <Root/>
       </Provider>
-    );
+    )
   }
 }
 
