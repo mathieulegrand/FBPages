@@ -11,6 +11,9 @@ import {
   ACCOUNTS_FETCH_SUCCESS,
   ACCOUNTS_FETCH_FAILURE,
   PAGE_SET_CURRENT,
+  PAGEINFO_FETCH,
+  PAGEINFO_FETCH_SUCCESS,
+  PAGEINFO_FETCH_FAILURE,
 } from './actions'
 
 const initialLoginState = {
@@ -82,10 +85,49 @@ const accounts = (state = initialAccountsState, action) => {
   }
 }
 
-const pages = (state = {currentPageId: undefined}, action) => {
+const initialPagesState = {
+  currentPageId:     undefined,
+  pageInfo:          {},
+  pageContent:       {},
+  requestingInfo:    false,
+  successInfo:       false,
+  requestingContent: false,
+  successContent:    false,
+  error:             null,
+}
+
+const pages = (state = initialPagesState, action) => {
   switch (action.type) {
     case PAGE_SET_CURRENT:
-      return Object.assign({}, state, { currentPageId: action.pageid })
+      return Object.assign({}, state, {
+        currentPageId:     action.pageid,
+        pageInfo:          {},
+        pageContent:       {},
+        requestingInfo:    false,
+        successInfo:       false,
+        requestingContent: false,
+        successContent:    false,
+        error:             null,
+      })
+    case PAGEINFO_FETCH:
+      return Object.assign({}, state, {
+        requestingInfo:    true,
+        successInfo:       false,
+        error:             null,
+      })
+    case PAGEINFO_FETCH_SUCCESS:
+      return Object.assign({}, state, {
+        requestingInfo:    false,
+        successInfo:       true,
+        error:             null,
+        pageInfo:          action.pageinfo,
+      })
+    case PAGEINFO_FETCH_FAILURE:
+      return Object.assign({}, state, {
+        requestingInfo:    false,
+        successInfo:       false,
+        error:             action.error,
+      })
     default:
       return state;
   }

@@ -32,7 +32,7 @@ const accountsFetch        = () => ({type: ACCOUNTS_FETCH})
 const accountsFetchSuccess = (accounts) => ({type: ACCOUNTS_FETCH_SUCCESS, accounts})
 const accountsFetchFailure = (error)    => ({type: ACCOUNTS_FETCH_FAILURE, error})
 
-const pageinfoFetch        = (pageid)   => ({type: PAGEINFO_FETCH, pageid})
+const pageinfoFetch        = (pageid)   => ({type: PAGEINFO_FETCH})
 const pageinfoFetchSuccess = (pageinfo) => ({type: PAGEINFO_FETCH_SUCCESS, pageinfo})
 const pageinfoFetchFailure = (error)    => ({type: PAGEINFO_FETCH_FAILURE, error})
 
@@ -79,10 +79,10 @@ export function accounts() {
   }
 }
 
-export function pageinfo(pageid) {
+export function pageInfo(pageId) {
   return dispatch => {
     dispatch(pageinfoFetch())
-    facebookAPI.pageDetails(pageid).then((pageDetails) => {
+    facebookAPI.pageDetails(pageId).then((pageDetails) => {
       dispatch(pageinfoFetchSuccess(pageDetails))
     }).catch((error) => {
       dispatch(pageinfoFetchFailure(error))

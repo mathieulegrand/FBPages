@@ -71,7 +71,7 @@ class Root extends React.Component {
       case 'Home':
         if (typeof this.props.pages.currentPageId === 'string') {
           let pageId = this.props.pages.currentPageId;
-          return (<HomeScene navigator={navigator} visibilityProfile='published' pageId={pageId}/>);
+          return (<HomeScene navigator={navigator} visibilityProfile='published'/>);
         }
         break;
       case 'Post':

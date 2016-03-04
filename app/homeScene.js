@@ -1,56 +1,50 @@
 'use strict';
 
-import React, { View, Text, Image } from 'react-native';
+import React, { View, Text, Image }     from 'react-native';
 import FBSDKCore, { FBSDKGraphRequest } from 'react-native-fbsdkcore';
+
 import GiftedListView from 'react-native-gifted-listview';
-import SafariView from 'react-native-safari-view'
-import Dimensions from 'Dimensions';
+import SafariView     from 'react-native-safari-view'
+import Dimensions     from 'Dimensions';
 
 var window = Dimensions.get('window');
 
-import Login  from './login.js';
-import TimeAgo from './timeago';
-import { Router } from './router.js'
+// -- Redux store related
+import { connect }         from 'react-redux'
+import * as actionCreators from './actions'
 
-export default class HomeScene extends React.Component {
+import TimeAgo      from './timeago';
+import LoadingScene from './loadingScene'
+
+class HomeScene extends React.Component {
   constructor(props) {
-    super(props);
-
+    super(props)
     this.state = {
-      currentPageId: props.pageId,
       // can be set to 'published', 'unpublished' or 'all'
       postsToShow: props.visibilityProfile || 'published',
       insights: {},
     };
 
-    this.setPageId(props.pageId);
     this.separatorId = 0;
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    // console.log("should?", this.props, nextProps, this.state, nextState);
-    // Here we should decide whether we need to trigger a new fetch of the posts
-    return true;
   }
 
   _safariView(url) {
     SafariView.isAvailable().then(() => { SafariView.show({url: url}) });
   }
 
-  setPageId(pageId) {
-    let pageDetailsRequest = new FBSDKGraphRequest(
-      this._receivePageDetails.bind(this),
-      '/'+pageId,
-      { fields: { string: 'name,about,category,cover,description,general_info,likes,new_like_count,picture' } }
-    ).start();
+  reloadPageInfoIfNeeded(pageId) {
+    if (pageId) {
+      this.props.dispatch(actionCreators.pageInfo(pageId));
+    }
   }
 
-  _receivePageDetails(error, result) {
-    if (!error) {
-      this.setState({ currentPageId: result.id, currentPageDetails: result });
-    } else {
-      console.log(error);
-      alert("Error getting the page details: "+error.message);
+  componentWillMount() {
+    this.reloadPageInfoIfNeeded(this.props.pages.currentPageId);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.pages.currentPageId !== this.props.pages.currentPageId) {
+      this.reloadPageInfoIfNeeded(nextProps.pages.currentPageId);
     }
   }
 
@@ -203,7 +197,8 @@ export default class HomeScene extends React.Component {
   }
 
   _renderHeader() {
-    let details = this.state.currentPageDetails;
+    console.log(this.props.pages.pageInfo);
+    let details = this.props.pages.pageInfo;
     let about   = details.about || "";
     let source  = details.cover? details.cover.source : "";
     if (about.length > 80) {
@@ -226,7 +221,7 @@ export default class HomeScene extends React.Component {
 
   _onFetch(page = 1, callback, options) {
     // console.log("Fetch", page, options);
-    let url = '/'+this.state.currentPageId;
+    let url = '/'+this.props.pages.currentPageId;
     let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } };
     if (this.state.postsToShow === 'published') {
       url += '/feed';
@@ -236,7 +231,7 @@ export default class HomeScene extends React.Component {
         params['is_published'] = { string: 'false' };
       }
     }
-    if (this.state.currentPageId.length > 0) {
+    if (this.props.pages.currentPageId.length > 0) {
       let feedRequest = new FBSDKGraphRequest(
         this._receiveFeed.bind(this, callback),
         url, params
@@ -251,7 +246,23 @@ export default class HomeScene extends React.Component {
   }
 
   render() {
-    if (this.state.currentPageId.length > 0) {
+    const { dispatch, pages } = this.props
+
+    if (!pages.currentPageId) {
+      return (
+        <View style={ styles.textBox }>
+          <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
+            No page to manage
+          </Text>
+        </View>
+      )
+    }
+
+    if (pages.currentPageId && pages.requestingInfo) {
+      return (<LoadingScene textMessage="Getting page details…"/>);
+    }
+
+    if (pages.currentPageId && pages.successInfo) {
       return (
         <GiftedListView
           rowView={this._renderRowView.bind(this)}
@@ -264,15 +275,31 @@ export default class HomeScene extends React.Component {
         />
       );
     } else {
-      // Empty view while I have no Page to display
       return (
         <View style={ styles.textBox }>
-          <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>Nothing yet.</Text>
+          <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
+            Error while loading page {pages.error}
+          </Text>
         </View>
-      );
+      )
     }
   }
 }
+
+HomeScene.propTypes = {
+  dispatch: React.PropTypes.func.isRequired,
+  accounts: React.PropTypes.object,
+  pages:    React.PropTypes.object,
+}
+
+const mapStateToProps = (state) => {
+  return {
+    accounts: state.accounts,
+    pages:    state.pages,
+  }
+}
+
+export default connect(mapStateToProps)(HomeScene);
 
 const styles = React.StyleSheet.create({
   imageBox: {
