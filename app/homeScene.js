@@ -151,6 +151,24 @@ class HomeScene extends React.Component {
     if (story.indexOf(fromName) === 0) {
       story = story.slice(fromName.length);
     }
+    let insightsView = null;
+    if (entry.insights) {
+      if (entry.insights.requesting) {
+        insightsView = <LoadingScene viewStyle={styles.loadingInsightsView}
+                                     textStyle={styles.loadingInsightsText}
+                                     activitySize="small"
+                                     activityColor="#cccccc"
+                                     textMessage="Loading insights"/>;
+      } else if (entry.insights.success) {
+        if (entry.insights.content) {
+          insightsView = <Text style={styles.displayInsightsText}>This post has {entry.insights.content.page_posts_impressions_unique} unique impressions.</Text>;
+        } else {
+          insightsView = <Text style={styles.displayInsightsText}>This post has no insights data</Text>;
+        }
+      } else if (entry.insights.error) {
+        insightsView = <Text style={styles.displayInsightsText}>Error querying insights</Text>;
+      }
+    }
     return (
       <View>
         <View style={ styles.storyHeader } >
@@ -162,7 +180,7 @@ class HomeScene extends React.Component {
           <TimeAgo style={ styles.storyDate } interval={300000} time={entry.safe_created_time}/>
         </View>
         { contentView.map( (item) => { return item; } ) }
-        <Text>{ this.state.insights.hasOwnProperty(entry.id)? "This post has "+this.state.insights[entry.id].page_posts_impressions_unique+" unique impressions." : ""}</Text>
+        { insightsView }
       </View>
     );
   }
@@ -324,6 +342,32 @@ const styles = React.StyleSheet.create({
   separator: {
     height: 10,
     backgroundColor: '#e8e8e8',
+  },
+  displayInsightsText: {
+    fontFamily: 'System',
+    fontSize: 14,
+    color: '#a8a8a8',
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 5,
+    marginTop: 5,
+    fontStyle: 'italic',
+  },
+  loadingInsightsView: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  loadingInsightsText: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 5,
+    marginTop: 5,
+    textAlign: 'center',
+    fontFamily: 'System',
+    fontSize: 14,
+    color: '#a8a8a8',
   },
   headerDetailsContainer: {
     flex: 1,

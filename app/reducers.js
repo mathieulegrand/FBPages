@@ -176,7 +176,7 @@ const pages = (state = initialPagesState, action) => {
         pageContent: apppendInsights(
           state.pageContent,
           action.postid,
-          { requesting: false, success: true, error: null, content: action.postinsights})
+          { requesting: false, success: true, error: null, content: action.postinsights.data[0]})
       })
     case POSTINSIGHTS_FETCH_FAILURE:
       return Object.assign({}, state, {
