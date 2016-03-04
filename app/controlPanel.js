@@ -23,42 +23,6 @@ const controlMenu = {
 const PAGES_SECTION = 'Pages'
 
 export default class ControlPanel extends React.Component {
-  constructor() {
-    super();
-    var dataSource = new React.ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1.id !== r2.id,
-        sectionHeaderHasChanged: (s1, s2) => s1 !== s2
-    });
-
-    this.state = {
-      dataSource: dataSource.cloneWithRowsAndSections(this.buildMenu(controlMenu))
-    }
-  }
-
-  // Append the section to each menu item
-  // in order to identify the section when the item is passed to renderRow
-  buildMenu(menuDescription) {
-    let menu = {};
-    for (let [section, entries] of Object.entries(menuDescription)) {
-      menu[section] = entries;      // copy the old entries
-      for (let entry of entries) {
-        entry.section = section;    // add the section key to each entry
-      }
-    }
-    return menu;
-  }
-
-  componentWillReceiveProps(props) {
-    // If we receive a new list of pages, update the menu
-    if (props.accounts) {
-      let newMenu = _.assign(controlMenu, { [PAGES_SECTION]: props.accounts }); // ! ES6 ComputedPropertyName
-      let order   = _.union([ PAGES_SECTION ], Object.keys(controlMenu));
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRowsAndSections(this.buildMenu(newMenu), order)
-      });
-    }
-  }
-
   renderSectionHeader(sectionData, sectionID) {
     return (
       <View style={ styles.headerView }>
@@ -72,18 +36,21 @@ export default class ControlPanel extends React.Component {
   renderRow(item) {
     // if the row belongs to the 'Pages' category, then
     // enrich the item with an action to dispatch, and an icon
+    let styleRowView = [ styles.rowView ];
     if (item.section === PAGES_SECTION) {
-      console.log(item);
-      item.action = (dispatch) => { dispatch(actionCreators.pageinfo(item.id)); }
+      item.action = (dispatch) => { dispatch(actionCreators.pageSetCurrent(item.id)); }
       item.icon   = <React.Image source={{uri: item.picture.data.url}}
                                  style={ styles.pageImageSize }></React.Image>
+      if (item.id === this.props.pages.currentPageId) {
+        styleRowView.push( styles.activeRowView );
+      }
     }
     return (
       <TouchableOpacity onPress={ () => {
         if (typeof item.action === 'function') {
           item.action(this.props.dispatch)
         }
-      }} style={ styles.rowView }>
+      }} style={ styleRowView }>
         <View style={ styles.iconView }>{ item.icon }</View>
         <Text style={ styles.rowText }>
           {item.name}
@@ -93,19 +60,18 @@ export default class ControlPanel extends React.Component {
   }
 
   componentWillMount() {
-    const { dispatch, accounts } = this.props
+    const { dispatch, accounts, pages } = this.props
 
     // Get the list of pages that can be managed
-    dispatch(actionCreators.accounts())
+    dispatch(actionCreators.accounts());
   }
 
   render() {
-    const { dispatch, accounts } = this.props
-
+    const { dispatch, accounts, pages, dataSource } = this.props
     return (
       <React.ListView
         style={styles.container}
-        dataSource={this.state.dataSource}
+        dataSource={dataSource}
         renderRow={this.renderRow.bind(this)}
         renderSectionHeader={this.renderSectionHeader.bind(this)}
       />
@@ -113,10 +79,41 @@ export default class ControlPanel extends React.Component {
   }
 }
 
+// Append the section to each menu item
+// in order to identify the section when the item is passed to renderRow
+function buildMenu(menuDescription) {
+  let menu = {};
+  for (let [section, entries] of Object.entries(menuDescription)) {
+    menu[section] = entries;      // copy the old entries
+    for (let entry of entries) {
+      entry.section = section;    // add the section key to each entry
+    }
+  }
+  return menu;
+}
+
 const mapStateToProps = (state) => {
+  let newMenu = {};
+  let order   = Object.keys(controlMenu);
+
+  // If we receive a new list of pages, update the menu
+  _.assign(newMenu, controlMenu);
+
+  if (state.accounts) {
+    _.assign(newMenu, { [PAGES_SECTION]: state.accounts }); // ! ES6 ComputedPropertyName
+    order   = _.union([ PAGES_SECTION ], Object.keys(controlMenu));
+  }
+
+  const dataSource = new React.ListView.DataSource({
+    rowHasChanged:           (r1, r2) => r1.id !== r2.id,
+    sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+  });
+
   return {
-    login:    state.login,
-    accounts: state.accounts,
+    login:      state.login,
+    accounts:   state.accounts,
+    pages:      state.pages,
+    dataSource: dataSource.cloneWithRowsAndSections(buildMenu(newMenu), order)
   }
 }
 
@@ -139,6 +136,9 @@ const styles = React.StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 0.5,
     borderColor: '#cccccc',
+  },
+  activeRowView: {
+    backgroundColor: '#dddddd',
   },
   rowText: {
     fontWeight: '400',

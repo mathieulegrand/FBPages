@@ -16,20 +16,14 @@ export default class HomeScene extends React.Component {
   constructor(props) {
     super(props);
 
-    let accountsRequest = new FBSDKGraphRequest(
-      this._receiveListOfPages.bind(this),
-      '/me/accounts',
-      { fields: { string: 'id,name' } }
-    ).start();
-
     this.state = {
-      currentPageId: '',
-      pagesList: [],
+      currentPageId: props.pageId,
       // can be set to 'published', 'unpublished' or 'all'
       postsToShow: props.visibilityProfile || 'published',
       insights: {},
     };
 
+    this.setPageId(props.pageId);
     this.separatorId = 0;
   }
 
@@ -57,23 +51,6 @@ export default class HomeScene extends React.Component {
     } else {
       console.log(error);
       alert("Error getting the page details: "+error.message);
-    }
-  }
-
-  _receiveListOfPages(error, result) {
-    if (! error) {
-      if (result.data && result.data.length > 0) {
-        let pagesList = [];
-        for (let page of result.data) {
-          pagesList.push({ id: page.id, name: page.name });
-        }
-        // the change of state will trigger a re-rendering of the page
-        this.setState({ pagesList: pagesList });
-        this.setPageId(pagesList[0].id);
-      }
-    } else {
-      console.log("error calling /me/accounts", error);
-      alert("Error loading list of Pages: "+error.message);
     }
   }
 
@@ -227,13 +204,14 @@ export default class HomeScene extends React.Component {
 
   _renderHeader() {
     let details = this.state.currentPageDetails;
-    let about   = details.about;
+    let about   = details.about || "";
+    let source  = details.cover? details.cover.source : "";
     if (about.length > 80) {
       about = about.substring(0,80) + "…";
     }
     return (
       <View style={ styles.headerContainerView }>
-        <Image source={{uri: details.cover.source}} resizeMode="cover" style={ styles.headerCoverImage }>
+        <Image source={{uri: source}} resizeMode="cover" style={ styles.headerCoverImage }>
           <View style={ styles.headerDetailsContainer }>
             <Image source={{uri: details.picture.data.url}} style={ styles.headerPagePicture }/>
             <View>
@@ -273,6 +251,7 @@ export default class HomeScene extends React.Component {
   }
 
   render() {
+    console.log("Render Home", this.props)
     if (this.state.currentPageId.length > 0) {
       return (
         <GiftedListView

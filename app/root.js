@@ -1,5 +1,7 @@
 'use strict'
 
+import _ from 'lodash'
+
 // -- React components
 import React  from 'react-native'
 import Drawer from 'react-native-drawer'
@@ -54,7 +56,7 @@ class Root extends React.Component {
         showNavigationBar={true}
         initialRoute={ { id: myRoute } }
         style={ styles.navigator }
-        renderScene={ this.navigatorRenderScene }
+        renderScene={ this.navigatorRenderScene.bind(this) }
         openDrawer={ this.openDrawer.bind(this) }
         gotoDefaultTab={ this.gotoDefaultTab.bind(this) }
         sceneStyle={ styles.scene }
@@ -67,7 +69,13 @@ class Root extends React.Component {
   navigatorRenderScene(route, navigator) {
     switch (route.id) {
       case 'Home':
-        return (<HomeScene navigator={navigator} visibilityProfile='published'/>);
+        if (typeof this.props.pages.currentPageId === 'string') {
+          let pageId = this.props.pages.currentPageId;
+          return (<HomeScene navigator={navigator} visibilityProfile='published' pageId={pageId}/>);
+        } else {
+          console.log("Nope", this.props.pages.currentPageId);
+        }
+        break;
       case 'Post':
         return (<PostScene navigator={navigator}/>);
       default:
@@ -130,6 +138,7 @@ const mapStateToProps = (state) => {
   return {
     login:    state.login,
     accounts: state.accounts,
+    pages:    state.pages,
   }
 }
 

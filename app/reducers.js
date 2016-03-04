@@ -10,6 +10,7 @@ import {
   ACCOUNTS_FETCH,
   ACCOUNTS_FETCH_SUCCESS,
   ACCOUNTS_FETCH_FAILURE,
+  PAGE_SET_CURRENT,
 } from './actions'
 
 const initialLoginState = {
@@ -60,6 +61,15 @@ const accounts = (state = [], action) => {
   }
 }
 
+const pages = (state = {}, action) => {
+  switch (action.type) {
+    case PAGE_SET_CURRENT:
+      return Object.assign({}, state, { currentPageId: action.pageid })
+    default:
+      return state;
+  }
+}
+
 // -- combine and export
-const rootReducer = combineReducers({ login, accounts });
+const rootReducer = combineReducers({ login, accounts, pages });
 export default rootReducer

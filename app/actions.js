@@ -13,6 +13,8 @@ export const ACCOUNTS_FETCH         = 'ACCOUNTS_FETCH'
 export const ACCOUNTS_FETCH_SUCCESS = 'ACCOUNTS_FETCH_SUCCESS'
 export const ACCOUNTS_FETCH_FAILURE = 'ACCOUNTS_FETCH_FAILURE'
 
+export const PAGE_SET_CURRENT       = 'PAGE_SET_CURRENT'
+
 export const PAGEINFO_FETCH         = 'PAGEINFO_FETCH'
 export const PAGEINFO_FETCH_SUCCESS = 'PAGEINFO_FETCH_SUCCESS'
 export const PAGEINFO_FETCH_FAILURE = 'PAGEINFO_FETCH_FAILURE'
@@ -23,6 +25,8 @@ export const loginSuccess   = () => ({type: LOGIN_SUCCESS})
 export const logoutRequest  = () => ({type: LOGOUT_REQUEST})
 export const logoutSuccess  = () => ({type: LOGOUT_SUCCESS})
 export const loginFailure   = (error) => ({type: LOGIN_FAILURE, error})
+
+export const pageSetCurrent = (pageid)   => ({type: PAGE_SET_CURRENT, pageid})
 
 const accountsFetch        = () => ({type: ACCOUNTS_FETCH})
 const accountsFetchSuccess = (accounts) => ({type: ACCOUNTS_FETCH_SUCCESS, accounts})
@@ -79,7 +83,6 @@ export function pageinfo(pageid) {
   return dispatch => {
     dispatch(pageinfoFetch())
     facebookAPI.pageDetails(pageid).then((pageDetails) => {
-      console.log("detauks", pageDetails);
       dispatch(pageinfoFetchSuccess(pageDetails))
     }).catch((error) => {
       dispatch(pageinfoFetchFailure(error))
