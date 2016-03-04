@@ -145,6 +145,7 @@ export function postInsights(postId) {
     dispatch(postinsightsFetch(postId))
     return new Promise( (resolve, reject) => {
       facebookAPI.postInsights(postId).then((postInsights) => {
+        console.log("----",postId, postInsights);
         dispatch(postinsightsFetchSuccess(postId, postInsights))
         resolve()
       }).catch((error) => {

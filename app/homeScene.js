@@ -161,7 +161,7 @@ class HomeScene extends React.Component {
                                      textMessage="Loading insights"/>;
       } else if (entry.insights.success) {
         if (entry.insights.content) {
-          insightsView = <Text style={styles.displayInsightsText}>This post has {entry.insights.content.page_posts_impressions_unique} unique impressions.</Text>;
+          insightsView = <Text style={styles.displayInsightsText}>This post has been viewed by {entry.insights.content.values[0].value} people.</Text>;
         } else {
           insightsView = <Text style={styles.displayInsightsText}>This post has no insights data</Text>;
         }

@@ -3,6 +3,7 @@
 import React from 'react-native'
 import Login from './login'
 
+// Welcome only request readPermissions (see comment in login.js)
 export default class WelcomeScene extends React.Component {
   render() {
     return (
@@ -11,9 +12,7 @@ export default class WelcomeScene extends React.Component {
           Welcome to{'\n'}
           Pages Manager
         </React.Text>
-        <Login style={styles.login}
-                     publishPermissions={ [ 'manage_pages' ] }
-        />
+        <Login style={styles.login} readPermissions={ [ 'read_insights' ] }/>
         <React.Text style={styles.instructions}>
           Connect to post updates to your Facebook Pages and
           see the number of people that have viewed your posts.

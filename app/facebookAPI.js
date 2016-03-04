@@ -3,7 +3,7 @@
 import FBSDKCore,  { FBSDKGraphRequest } from 'react-native-fbsdkcore';
 import FBSDKLogin, { FBSDKLoginManager } from 'react-native-fbsdklogin';
 
-export function login() {
+export function getPublishPermissions() {
   return new Promise((resolve, reject) => {
     FBSDKLoginManager.logInWithPublishPermissions(['manage_pages'], (error, result) => {
       if (error) {
@@ -40,7 +40,7 @@ export const pageDetails  = (pageId) =>
   graphRequest(`/${pageId}`, { fields: { string: 'name,about,category,cover,description,general_info,likes,new_like_count,picture' } })
 
 export const postInsights = (postId) =>
-  graphRequest(`${postId}/insights`, { fields: { string: 'page_posts_impressions,page_posts_impressions_unique' } })
+  graphRequest(`/${postId}/insights/post_impressions_unique/lifetime`, { fields: { string: 'name,id,period,values' } })
 
 export const FEED_PUBLISHED   = 'published'
 export const FEED_UNPUBLISHED = 'unpublished'
@@ -72,10 +72,3 @@ function graphRequest(path, params) {
     }, path, params).start();
   });
 }
-
-// FBSDKAccessToken.getCurrentAccessToken((token) => {
-//       if (token && typeof this.props.onLoggedIn === 'function') {
-//         // we already are logged in, invoke the special action if defined
-//         this.props.onLoggedIn();
-//       }
-//     });

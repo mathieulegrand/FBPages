@@ -37,6 +37,9 @@ export default class PostScene extends React.Component {
     return 'New Post';
   }
 
+  // we need to request post permissions here
+  // facebookAPI.getPublishPermissions.then(() => {})
+
   render() {
     return (
       <View style={{height: this.state.visibleHeight}}>
