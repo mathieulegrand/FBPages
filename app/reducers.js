@@ -50,18 +50,39 @@ const login = (state = initialLoginState, action) => {
   }
 }
 
-const accounts = (state = [], action) => {
+const initialAccountsState = {
+  requesting: false,
+  success:    false,
+  error:      null,
+}
+
+const accounts = (state = initialAccountsState, action) => {
   switch (action.type) {
+    case ACCOUNTS_FETCH:
+      return Object.assign({}, state, {
+        success:    false,
+        requesting: true,
+        error:      null,
+      })
+    case ACCOUNTS_FETCH_FAILURE:
+      return Object.assign({}, state, {
+        success:    false,
+        requesting: false,
+        error:      action.error,
+      })
     case ACCOUNTS_FETCH_SUCCESS:
-      if (action.accounts.data) {
-        return Object.assign([], state, action.accounts.data);
-      }
+      return Object.assign({}, state, {
+        success:    true,
+        requesting: false,
+        error:      null,
+        data:       action.accounts.data,
+      })
     default:
       return state;
   }
 }
 
-const pages = (state = {}, action) => {
+const pages = (state = {currentPageId: undefined}, action) => {
   switch (action.type) {
     case PAGE_SET_CURRENT:
       return Object.assign({}, state, { currentPageId: action.pageid })

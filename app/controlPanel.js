@@ -59,24 +59,21 @@ export default class ControlPanel extends React.Component {
     );
   }
 
-  componentWillMount() {
-    const { dispatch, accounts, pages } = this.props
-
-    // Get the list of pages that can be managed
-    dispatch(actionCreators.accounts());
-  }
-
   render() {
-    const { dispatch, accounts, pages, dataSource } = this.props
     return (
       <React.ListView
         style={styles.container}
-        dataSource={dataSource}
+        dataSource={this.props.dataSource}
         renderRow={this.renderRow.bind(this)}
         renderSectionHeader={this.renderSectionHeader.bind(this)}
       />
     );
   }
+}
+
+ControlPanel.propTypes = {
+  dispatch:   React.PropTypes.func.isRequired,
+  dataSource: React.PropTypes.object.isRequired,
 }
 
 // Append the section to each menu item
@@ -99,8 +96,8 @@ const mapStateToProps = (state) => {
   // If we receive a new list of pages, update the menu
   _.assign(newMenu, controlMenu);
 
-  if (state.accounts) {
-    _.assign(newMenu, { [PAGES_SECTION]: state.accounts }); // ! ES6 ComputedPropertyName
+  if (state.accounts.success) {
+    _.assign(newMenu, { [PAGES_SECTION]: state.accounts.data }); // ! ES6 ComputedPropertyName
     order   = _.union([ PAGES_SECTION ], Object.keys(controlMenu));
   }
 

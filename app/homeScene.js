@@ -251,7 +251,6 @@ export default class HomeScene extends React.Component {
   }
 
   render() {
-    console.log("Render Home", this.props)
     if (this.state.currentPageId.length > 0) {
       return (
         <GiftedListView

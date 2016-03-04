@@ -37,16 +37,16 @@ const pageinfoFetchSuccess = (pageinfo) => ({type: PAGEINFO_FETCH_SUCCESS, pagei
 const pageinfoFetchFailure = (error)    => ({type: PAGEINFO_FETCH_FAILURE, error})
 
 // -- action methods
-export function login() {
-  return dispatch => {
-    dispatch(loginRequest());
-    facebookAPI.login().then((result) => {
-      dispatch(loginSuccess());
-    }).catch((err) => {
-      dispatch(loginFailure(err))
-    })
-  }
-}
+// export function login() {
+//   return dispatch => {
+//     dispatch(loginRequest());
+//     facebookAPI.login().then((result) => {
+//       dispatch(loginSuccess());
+//     }).catch((err) => {
+//       dispatch(loginFailure(err))
+//     })
+//   }
+// }
 
 export function logout() {
   return dispatch => {
@@ -57,7 +57,7 @@ export function logout() {
   }
 }
 
-export function getinfo() {
+export function getInfo() {
   return dispatch => {
     dispatch(loginRequest())
     facebookAPI.getInfo().then(() => {

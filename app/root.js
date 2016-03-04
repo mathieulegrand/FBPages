@@ -72,8 +72,6 @@ class Root extends React.Component {
         if (typeof this.props.pages.currentPageId === 'string') {
           let pageId = this.props.pages.currentPageId;
           return (<HomeScene navigator={navigator} visibilityProfile='published' pageId={pageId}/>);
-        } else {
-          console.log("Nope", this.props.pages.currentPageId);
         }
         break;
       case 'Post':
@@ -89,14 +87,38 @@ class Root extends React.Component {
 
     // try to do a profile info request, to test if we are logged in
     // if we are, the state will be set to login.success by the action
-    dispatch(actionCreators.getinfo());
+    dispatch(actionCreators.getInfo());
+  }
+
+  componentWillReceiveProps(props) {
+    const { dispatch, login, accounts, pages } = props // ! the new props to be
+
+    if (login.success && !accounts.success && !this.props.accounts.requesting) {
+      // we just logged in, and we do not have accounts, nor are we currently requesting
+      // then do request accounts list.
+      dispatch(actionCreators.accounts())
+    } else if (login.success && accounts.success && !pages.currentPageId) {
+      // automatically select the first account if nothing is selected
+      let newPageId = undefined;
+      if (accounts.data && accounts.data.length > 0) {
+        newPageId = accounts.data[0].id;
+      }
+      if (newPageId) {
+        dispatch(actionCreators.pageSetCurrent(newPageId))
+      }
+    }
   }
 
   render() {
     const { dispatch, login, accounts } = this.props
 
+    // the initial loading pages
+    // we might need a better logic to allow user to retry if he gets stuck
+    // on one of those screens for a long time…
     if (login.requesting) {
       return (<LoadingScene textMessage="Connecting to Facebook…"/>);
+    } else if (login.success && (!accounts.success || accounts.requesting)) {
+      return (<LoadingScene textMessage="Requesting list of accounts…"/>);
     }
 
     // If we are not logged in, display a welcome / login screen
@@ -130,8 +152,9 @@ class Root extends React.Component {
 
 Root.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
-  login:    React.PropTypes.object,
-  accounts: React.PropTypes.array,
+  login:    React.PropTypes.object.isRequired,
+  accounts: React.PropTypes.object.isRequired,
+  pages:    React.PropTypes.object.isRequired,
 }
 
 const mapStateToProps = (state) => {
