@@ -46,8 +46,8 @@ export const FEED_PUBLISHED   = 'published'
 export const FEED_UNPUBLISHED = 'unpublished'
 export const FEED_ALL         = 'all'
 
-export const pageFeed = (pageId, postsToShow) => {
-  let url    = `/${this.state.currentPageId}`;
+export const pageFeed = (pageId, postsToShow=FEED_PUBLISHED) => {
+  let url    = `/${pageId}`;
   let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } };
   if (postsToShow === FEED_PUBLISHED) {
     url += '/feed';

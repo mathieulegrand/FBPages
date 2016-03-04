@@ -19,6 +19,14 @@ export const PAGEINFO_FETCH         = 'PAGEINFO_FETCH'
 export const PAGEINFO_FETCH_SUCCESS = 'PAGEINFO_FETCH_SUCCESS'
 export const PAGEINFO_FETCH_FAILURE = 'PAGEINFO_FETCH_FAILURE'
 
+export const PAGECONTENT_FETCH         = 'PAGECONTENT_FETCH'
+export const PAGECONTENT_FETCH_SUCCESS = 'PAGECONTENT_FETCH_SUCCESS'
+export const PAGECONTENT_FETCH_FAILURE = 'PAGECONTENT_FETCH_FAILURE'
+
+export const POSTINSIGHTS_FETCH         = 'POSTINSIGHTS_FETCH'
+export const POSTINSIGHTS_FETCH_SUCCESS = 'POSTINSIGHTS_FETCH_SUCCESS'
+export const POSTINSIGHTS_FETCH_FAILURE = 'POSTINSIGHTS_FETCH_FAILURE'
+
 // -- action creators
 export const loginRequest   = () => ({type: LOGIN_REQUEST})
 export const loginSuccess   = () => ({type: LOGIN_SUCCESS})
@@ -32,9 +40,28 @@ const accountsFetch        = () => ({type: ACCOUNTS_FETCH})
 const accountsFetchSuccess = (accounts) => ({type: ACCOUNTS_FETCH_SUCCESS, accounts})
 const accountsFetchFailure = (error)    => ({type: ACCOUNTS_FETCH_FAILURE, error})
 
-const pageinfoFetch        = (pageid)   => ({type: PAGEINFO_FETCH})
+const pageinfoFetch        = ()         => ({type: PAGEINFO_FETCH})
 const pageinfoFetchSuccess = (pageinfo) => ({type: PAGEINFO_FETCH_SUCCESS, pageinfo})
 const pageinfoFetchFailure = (error)    => ({type: PAGEINFO_FETCH_FAILURE, error})
+
+const pagecontentFetch        = ()            => ({type: PAGECONTENT_FETCH})
+const pagecontentFetchSuccess = (pagecontent) => ({type: PAGECONTENT_FETCH_SUCCESS, pagecontent})
+const pagecontentFetchFailure = (error)       => ({type: PAGECONTENT_FETCH_FAILURE, error})
+
+const postinsightsFetch        = (postid) => ({
+  type: POSTINSIGHTS_FETCH,
+  postid,
+})
+const postinsightsFetchSuccess = (postid, postinsights) => ({
+  type: POSTINSIGHTS_FETCH_SUCCESS,
+  postid,
+  postinsights,
+})
+const postinsightsFetchFailure = (postid, error) => ({
+  type: POSTINSIGHTS_FETCH_FAILURE,
+  postid,
+  error,
+})
 
 // -- action methods
 // export function login() {
@@ -61,9 +88,9 @@ export function getInfo() {
   return dispatch => {
     dispatch(loginRequest())
     facebookAPI.getInfo().then(() => {
-      dispatch(loginSuccess());
+      dispatch(loginSuccess())
     }).catch(() => {
-      dispatch(logoutSuccess());
+      dispatch(logoutSuccess())
     })
   }
 }
@@ -74,7 +101,7 @@ export function accounts() {
     facebookAPI.accounts().then((accounts) => {
       dispatch(accountsFetchSuccess(accounts))
     }).catch((error) => {
-      dispatch(accountsFetchFailure(error));
+      dispatch(accountsFetchFailure(error))
     })
   }
 }
@@ -82,10 +109,44 @@ export function accounts() {
 export function pageInfo(pageId) {
   return dispatch => {
     dispatch(pageinfoFetch())
-    facebookAPI.pageDetails(pageId).then((pageDetails) => {
-      dispatch(pageinfoFetchSuccess(pageDetails))
-    }).catch((error) => {
-      dispatch(pageinfoFetchFailure(error))
+    return new Promise ( (resolve, reject) => {
+      facebookAPI.pageDetails(pageId).then((pageDetails) => {
+        dispatch(pageinfoFetchSuccess(pageDetails))
+        resolve()
+      }).catch((error) => {
+        dispatch(pageinfoFetchFailure(error))
+        reject(error)
+      })
+    })
+  }
+}
+
+export function pageContent(pageId) {
+  return dispatch => {
+    dispatch(pagecontentFetch())
+    return new Promise( (resolve, reject) => {
+      facebookAPI.pageFeed(pageId).then((pageContent) => {
+        dispatch(pagecontentFetchSuccess(pageContent))
+        resolve()
+      }).catch((error) => {
+        dispatch(pagecontentFetchFailure(error))
+        reject(error)
+      })
+    })
+  }
+}
+
+export function postInsights(postId) {
+  return dispatch => {
+    dispatch(postinsightsFetch(postId))
+    return new Promise( (resolve, reject) => {
+      facebookAPI.postInsights(postId).then((postInsights) => {
+        dispatch(postinsightsFetchSuccess(postId, postInsights))
+        resolve()
+      }).catch((error) => {
+        dispatch(postinsightsFetchFailure(postId, error))
+        reject(error)
+      })
     })
   }
 }

@@ -16,18 +16,9 @@ import * as actionCreators from './actions'
 import TimeAgo      from './timeago';
 import LoadingScene from './loadingScene'
 
+let separatorCounter = 0;
+
 class HomeScene extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      // can be set to 'published', 'unpublished' or 'all'
-      postsToShow: props.visibilityProfile || 'published',
-      insights: {},
-    };
-
-    this.separatorId = 0;
-  }
-
   _safariView(url) {
     SafariView.isAvailable().then(() => { SafariView.show({url: url}) });
   }
@@ -48,40 +39,20 @@ class HomeScene extends React.Component {
     }
   }
 
-  _receiveInsight(error, result) {
-    if (!error) {
-      for (let entry of result.data) {
-        //console.log("Received insight for", entry)
-        this.setState( (previousState, currentProps) => {
-          let newState = previousState;
-          newState[entry.id] = result;
-          return { insights: newState };
-        });
-      }
-    }
-  }
-
-  _receiveFeed(callback, error, result) {
-    if (!error) {
+  _receiveFeed(callback) {
+    const { dispatch, pages } = this.props
+    if (pages.successContent) {
       let rows = {};
-      for (let entry of result.data) {
+      for (let entry of pages.pageContent) {
         // manually parse the date to get the year "2016-02-24T11:22:22+0000",
         let year = entry.created_time.split('-')[0];
         entry.safe_created_time = entry.created_time.slice(0,19);
         // push or create
         (rows[year] = rows[year] || []).push(entry);
 
-        // Query the insights for each post
-        let insights = new FBSDKGraphRequest(
-          this._receiveInsight.bind(this),
-          '/'+entry.id+'/insights',
-          { fields: { string: 'page_posts_impressions,page_posts_impressions_unique' } }
-        ).start();
+        this.props.dispatch(actionCreators.postInsights(entry.id))
       }
       callback(rows);
-    } else {
-      console.log("_receiveFeed error",error);
-      alert("Failed to receive list of posts: "+error.message);
     }
   }
 
@@ -110,7 +81,7 @@ class HomeScene extends React.Component {
 
   _renderSeparatorView() {
     return (
-      <View style={styles.separator} key={this.separatorId++}/>
+      <View style={styles.separator} key={separatorCounter++}/>
     );
   }
 
@@ -197,7 +168,6 @@ class HomeScene extends React.Component {
   }
 
   _renderHeader() {
-    console.log(this.props.pages.pageInfo);
     let details = this.props.pages.pageInfo;
     let about   = details.about || "";
     let source  = details.cover? details.cover.source : "";
@@ -220,25 +190,10 @@ class HomeScene extends React.Component {
   }
 
   _onFetch(page = 1, callback, options) {
-    // console.log("Fetch", page, options);
-    let url = '/'+this.props.pages.currentPageId;
-    let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } };
-    if (this.state.postsToShow === 'published') {
-      url += '/feed';
-    } else {
-      url += '/promotable_posts';
-      if (this.state.postsToShow !== 'all') {
-        params['is_published'] = { string: 'false' };
-      }
-    }
-    if (this.props.pages.currentPageId.length > 0) {
-      let feedRequest = new FBSDKGraphRequest(
-        this._receiveFeed.bind(this, callback),
-        url, params
-      ).start();
-    } else {
-      alert("No page to fetch");
-    }
+    console.log(this.props);
+    this.props.dispatch(actionCreators.pageContent(this.props.pages.currentPageId)).then(() => {
+      this._receiveFeed(callback)
+    })
   }
 
   getTitle() {

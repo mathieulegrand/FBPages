@@ -14,6 +14,12 @@ import {
   PAGEINFO_FETCH,
   PAGEINFO_FETCH_SUCCESS,
   PAGEINFO_FETCH_FAILURE,
+  PAGECONTENT_FETCH,
+  PAGECONTENT_FETCH_SUCCESS,
+  PAGECONTENT_FETCH_FAILURE,
+  POSTINSIGHTS_FETCH,
+  POSTINSIGHTS_FETCH_SUCCESS,
+  POSTINSIGHTS_FETCH_FAILURE,
 } from './actions'
 
 const initialLoginState = {
@@ -96,6 +102,17 @@ const initialPagesState = {
   error:             null,
 }
 
+function apppendInsights(contentList, postId, insights) {
+  let newContentList = contentList.slice(0)
+  for (let item of newContentList) {
+    if (item.id === postId) {
+      item.insights = insights;
+      break;
+    }
+  }
+  return newContentList;
+}
+
 const pages = (state = initialPagesState, action) => {
   switch (action.type) {
     case PAGE_SET_CURRENT:
@@ -127,6 +144,46 @@ const pages = (state = initialPagesState, action) => {
         requestingInfo:    false,
         successInfo:       false,
         error:             action.error,
+      })
+    case PAGECONTENT_FETCH:
+      return Object.assign({}, state, {
+        requestingContent:    true,
+        successContent:       false,
+        error:                null,
+      })
+    case PAGECONTENT_FETCH_SUCCESS:
+      return Object.assign({}, state, {
+        requestingContent:    false,
+        successContent:       true,
+        error:                null,
+        pageContent:          action.pagecontent.data,
+      })
+    case PAGECONTENT_FETCH_FAILURE:
+      return Object.assign({}, state, {
+        requestingContent:    false,
+        successContent:       false,
+        error:                action.error,
+      })
+    case POSTINSIGHTS_FETCH:
+      return Object.assign({}, state, {
+        pageContent: apppendInsights(
+          state.pageContent,
+          action.postid,
+          { requesting: true, success: false, error: null })
+      })
+    case POSTINSIGHTS_FETCH_SUCCESS:
+      return Object.assign({}, state, {
+        pageContent: apppendInsights(
+          state.pageContent,
+          action.postid,
+          { requesting: false, success: true, error: null, content: action.postinsights})
+      })
+    case POSTINSIGHTS_FETCH_FAILURE:
+      return Object.assign({}, state, {
+        pageContent: apppendInsights(
+          state.pageContent,
+          action.postid,
+          { requesting: false, success: false, error: action.error })
       })
     default:
       return state;
