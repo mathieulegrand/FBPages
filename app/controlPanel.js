@@ -38,7 +38,10 @@ export default class ControlPanel extends React.Component {
     // enrich the item with an action to dispatch, and an icon
     let styleRowView = [ styles.rowView ];
     if (item.section === PAGES_SECTION) {
-      item.action = (dispatch) => { dispatch(actionCreators.pageSetCurrent(item.id)); }
+      item.action = () => {
+        this.props.dispatch(actionCreators.pageSetCurrent(item.id));
+        this.props.closeDrawer();
+      }
       item.icon   = <React.Image source={{uri: item.picture.data.url}}
                                  style={ styles.pageImageSize }></React.Image>
       if (item.id === this.props.pages.currentPageId) {
@@ -46,11 +49,8 @@ export default class ControlPanel extends React.Component {
       }
     }
     return (
-      <TouchableOpacity onPress={ () => {
-        if (typeof item.action === 'function') {
-          item.action(this.props.dispatch)
-        }
-      }} style={ styleRowView }>
+      <TouchableOpacity onPress={ (typeof item.action === 'function')? item.action : null }
+                        style={ styleRowView }>
         <View style={ styles.iconView }>{ item.icon }</View>
         <Text style={ styles.rowText }>
           {item.name}

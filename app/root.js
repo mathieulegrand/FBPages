@@ -132,7 +132,7 @@ class Root extends React.Component {
                 styles={{ main: drawerStyle }}
                 tweenHandler={Drawer.tweenPresets.parallax}
                 tapToClose={true}
-                content={<ControlPanel />}>
+                content={<ControlPanel closeDrawer={ this.closeDrawer.bind(this) }/>}>
           <React.TabBarIOS>
             { this._tabItem({ title:            'Page',
                               iconName:         'ios-list-outline',
