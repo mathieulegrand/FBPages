@@ -22,6 +22,8 @@ import {
   POSTINSIGHTS_FETCH_FAILURE,
 } from './actions'
 
+import * as facebookAPI from './facebookAPI'
+
 const initialLoginState = {
   requesting: false,
   success:    false,
@@ -100,6 +102,7 @@ const initialPagesState = {
   requestingContent: false,
   successContent:    false,
   error:             null,
+  shown:             facebookAPI.FEED_PUBLISHED,
 }
 
 function apppendInsights(contentList, postId, insights) {
@@ -157,6 +160,7 @@ const pages = (state = initialPagesState, action) => {
         successContent:       true,
         error:                null,
         pageContent:          action.pagecontent.data,
+        shown:                action.shown,
       })
     case PAGECONTENT_FETCH_FAILURE:
       return Object.assign({}, state, {

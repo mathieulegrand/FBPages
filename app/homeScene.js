@@ -209,7 +209,7 @@ class HomeScene extends React.Component {
 
   _onFetch(page = 1, callback, options) {
     console.log(this.props);
-    this.props.dispatch(actionCreators.pageContent(this.props.pages.currentPageId)).then(() => {
+    this.props.dispatch(actionCreators.pageContent(this.props.pages.currentPageId, this.props.pages.shown)).then(() => {
       this._receiveFeed(callback)
     })
   }

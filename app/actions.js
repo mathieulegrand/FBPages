@@ -45,7 +45,11 @@ const pageinfoFetchSuccess = (pageinfo) => ({type: PAGEINFO_FETCH_SUCCESS, pagei
 const pageinfoFetchFailure = (error)    => ({type: PAGEINFO_FETCH_FAILURE, error})
 
 const pagecontentFetch        = ()            => ({type: PAGECONTENT_FETCH})
-const pagecontentFetchSuccess = (pagecontent) => ({type: PAGECONTENT_FETCH_SUCCESS, pagecontent})
+const pagecontentFetchSuccess = (pagecontent, shown) => ({
+  type: PAGECONTENT_FETCH_SUCCESS,
+  pagecontent,
+  shown
+})
 const pagecontentFetchFailure = (error)       => ({type: PAGECONTENT_FETCH_FAILURE, error})
 
 const postinsightsFetch        = (postid) => ({
@@ -121,12 +125,12 @@ export function pageInfo(pageId) {
   }
 }
 
-export function pageContent(pageId) {
+export function pageContent(pageId, postsToShow=facebookAPI.FEED_PUBLISHED) {
   return dispatch => {
     dispatch(pagecontentFetch())
     return new Promise( (resolve, reject) => {
-      facebookAPI.pageFeed(pageId).then((pageContent) => {
-        dispatch(pagecontentFetchSuccess(pageContent))
+      facebookAPI.pageFeed(pageId, postsToShow).then((pageContent) => {
+        dispatch(pagecontentFetchSuccess(pageContent, postsToShow))
         resolve()
       }).catch((error) => {
         dispatch(pagecontentFetchFailure(error))

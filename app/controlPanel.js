@@ -7,17 +7,29 @@ import Icon   from 'react-native-vector-icons/Ionicons';
 // -- Redux store related
 import { connect }         from 'react-redux'
 import * as actionCreators from './actions'
+import * as facebookAPI    from './facebookAPI'
 
 import Login  from './login'
 
 // the default menu of the Drawer
-const controlMenu = {
-  'Help & Settings': [{
+const controlMenu = (state) => ({
+  'Help & Settings': [ {
+    name:   (state.pages.shown === facebookAPI.FEED_PUBLISHED? "Show unpublished" : "Show published"),
+    action: (dispatch) => {
+      dispatch(actionCreators.pageContent(
+        state.pages.currentPageId,
+        state.pages.shown === facebookAPI.FEED_PUBLISHED? facebookAPI.FEED_ALL : facebookAPI.FEED_PUBLISHED))
+    },
+    icon:   () => {
+      return <Icon name={ state.pages.shown === facebookAPI.FEED_PUBLISHED? "toggle" : "toggle-filled" }
+                   size={18} color="#888888" />
+    },
+  }, {
     name:   "Logout",
     action: (dispatch) => { dispatch(actionCreators.logout()); },
     icon:   <Icon name="power" size={18} color="#888888" />
   }]
-};
+});
 
 // and the additional sections names
 const PAGES_SECTION = 'Pages'
@@ -49,9 +61,13 @@ export default class ControlPanel extends React.Component {
       }
     }
     return (
-      <TouchableOpacity onPress={ (typeof item.action === 'function')? item.action : null }
+      <TouchableOpacity onPress={ (typeof item.action === 'function')?
+                                    item.action.bind(undefined, this.props.dispatch) :
+                                    null }
                         style={ styleRowView }>
-        <View style={ styles.iconView }>{ item.icon }</View>
+        <View style={ styles.iconView }>
+          { typeof item.icon === 'function'? item.icon() : item.icon }
+        </View>
         <Text style={ styles.rowText }>
           {item.name}
         </Text>
@@ -91,14 +107,13 @@ function buildMenu(menuDescription) {
 
 const mapStateToProps = (state) => {
   let newMenu = {};
-  let order   = Object.keys(controlMenu);
+  _.assign(newMenu, controlMenu(state));
 
-  // If we receive a new list of pages, update the menu
-  _.assign(newMenu, controlMenu);
+  let order   = Object.keys(newMenu);
 
   if (state.accounts.success) {
+    order   = _.union([ PAGES_SECTION ], order);
     _.assign(newMenu, { [PAGES_SECTION]: state.accounts.data }); // ! ES6 ComputedPropertyName
-    order   = _.union([ PAGES_SECTION ], Object.keys(controlMenu));
   }
 
   const dataSource = new React.ListView.DataSource({
