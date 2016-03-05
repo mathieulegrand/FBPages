@@ -31,6 +31,7 @@ import {
   POST_SEND_FAILURE,
   TOKEN_ERRORS_CLEAR,
   POST_ERRORS_CLEAR,
+  POST_SENT_CLEAR,
 } from './actions'
 
 import * as facebookAPI from './facebookAPI'
@@ -282,6 +283,10 @@ const pages = (state = initialPagesState, action) => {
         errorPost:        null,
         errorToken:       null,
         errorPermissions: null,
+      })
+    case POST_SENT_CLEAR:
+      return Object.assign({}, state, {
+        successPost:      false,
       })
     default:
       return state;

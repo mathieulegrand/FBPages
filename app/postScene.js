@@ -6,7 +6,7 @@ import * as facebookAPI from './facebookAPI'
 // -- Redux store related
 import { connect }         from 'react-redux'
 import * as actionCreators from './actions'
-import ErrorBar            from './errorBar'
+import ErrorBar            from './components/errorBar'
 
 var buttonsGap    = 50;
 var navBarHeight  = 64;

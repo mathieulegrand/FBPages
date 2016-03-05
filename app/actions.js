@@ -40,6 +40,7 @@ export const POST_SEND_FAILURE = 'POST_SEND_FAILURE'
 
 export const TOKEN_ERRORS_CLEAR = 'TOKEN_ERRORS_CLEAR'
 export const POST_ERRORS_CLEAR  = 'POST_ERRORS_CLEAR'
+export const POST_SENT_CLEAR    = 'POST_SENT_CLEAR'
 
 // -- action creators
 export const loginRequest   = () => ({type: LOGIN_REQUEST})
@@ -94,6 +95,7 @@ const postSendFailure     = (error)  => ({type: POST_SEND_FAILURE, error})
 
 const tokenErrorsClear    = () => ({type: TOKEN_ERRORS_CLEAR})
 const postErrorsClear     = () => ({type: POST_ERRORS_CLEAR})
+const postSentClear       = () => ({type: POST_SENT_CLEAR})
 
 // -- action methods
 // export function login() {
@@ -192,6 +194,12 @@ export function clearTokenErrors() {
 export function clearPostErrors() {
   return dispatch => {
     dispatch(postErrorsClear());
+  }
+}
+
+export function clearPostSent() {
+  return dispatch => {
+    dispatch(postSentClear());
   }
 }
 

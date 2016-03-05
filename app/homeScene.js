@@ -14,9 +14,9 @@ var window = Dimensions.get('window');
 import { connect }         from 'react-redux'
 import * as actionCreators from './actions'
 
-import TimeAgo      from './timeago';
+import TimeAgo      from './components/timeago';
 import LoadingScene from './loadingScene'
-import ErrorBar     from './errorBar'
+import ErrorBar     from './components/errorBar'
 
 let separatorCounter = 0;
 
@@ -235,7 +235,6 @@ class HomeScene extends React.Component {
           </View>
           <View style={styles.buttonContainer}/>
         </View>
-        <ErrorBar green={true} display={true} id={separatorCounter++} textMessage="Test 123"/>
         {component}
       </View>
     );
@@ -258,17 +257,26 @@ class HomeScene extends React.Component {
       return this.renderWithNavBar(<LoadingScene textMessage="Getting page details…"/>);
     }
 
+    let errorBar = null;
+    if (pages.successPost) {
+      errorBar = <ErrorBar green={true} textMessage={"New message sent successfully"}
+                           onPress={ () => { dispatch(actionCreators.clearPostSent()) } } />;
+    }
+
     if (pages.currentPageId && pages.successInfo) {
       return this.renderWithNavBar(
-        <GiftedListView
-          rowView={this._renderRowView.bind(this)}
-          onFetch={this._onFetch.bind(this)}
-          firstLoader={true}
-          withSections={true}
-          headerView={this._renderHeader.bind(this)}
-          sectionHeaderView={this._renderSectionHeaderView.bind(this)}
-          renderSeparator={this._renderSeparatorView.bind(this)}
-        />
+        <View>
+          { errorBar }
+          <GiftedListView
+            rowView={this._renderRowView.bind(this)}
+            onFetch={this._onFetch.bind(this)}
+            firstLoader={true}
+            withSections={true}
+            headerView={this._renderHeader.bind(this)}
+            sectionHeaderView={this._renderSectionHeaderView.bind(this)}
+            renderSeparator={this._renderSeparatorView.bind(this)}
+          />
+        </View>
       );
     } else {
       return this.renderWithNavBar(
