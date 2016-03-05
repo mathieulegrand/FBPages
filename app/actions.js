@@ -161,7 +161,7 @@ export function pageContent(pageId, postsToShow=facebookAPI.FEED_PUBLISHED) {
     return new Promise( (resolve, reject) => {
       facebookAPI.pageFeed(pageId, postsToShow).then((pageContent) => {
         dispatch(pagecontentFetchSuccess(pageContent, postsToShow))
-        resolve()
+        resolve(pageContent)
       }).catch((error) => {
         dispatch(pagecontentFetchFailure(error))
         reject(error)

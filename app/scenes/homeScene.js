@@ -1,13 +1,9 @@
-'use strict';
+'use strict'
 
-import React, { View, Text, Image }     from 'react-native';
-
-import GiftedListView from 'react-native-gifted-listview';
-import SafariView     from 'react-native-safari-view'
-import Icon           from 'react-native-vector-icons/Ionicons';
-import Dimensions     from 'Dimensions';
-
-var window = Dimensions.get('window');
+import React       from 'react-native'
+import SafariView  from 'react-native-safari-view'
+import Icon        from 'react-native-vector-icons/Ionicons'
+import Dimensions  from 'Dimensions'
 
 // -- Redux store related
 import { connect }         from 'react-redux'
@@ -19,95 +15,87 @@ import Loading   from '../components/loading'
 import NavBar    from '../components/navBar'
 
 let separatorCounter = 0;
+const window = Dimensions.get('window');
 
 class HomeScene extends React.Component {
-  _safariView(url) {
-    SafariView.isAvailable().then(() => { SafariView.show({url: url}) });
-  }
-
-  reloadPageInfoIfNeeded(pageId) {
-    if (pageId) {
-      this.props.dispatch(actionCreators.pageInfo(pageId));
-    }
-  }
-
   componentWillMount() {
-    this.reloadPageInfoIfNeeded(this.props.pages.currentPageId);
+    this.reloadPageInfoIfNeeded(this.props.pages);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.pages.currentPageId !== this.props.pages.currentPageId) {
-      this.reloadPageInfoIfNeeded(nextProps.pages.currentPageId);
+      this.reloadPageInfoIfNeeded(nextProps.pages);
     }
   }
 
-  _receiveFeed(callback) {
-    const { dispatch, pages } = this.props
-    if (pages.successContent) {
-      let rows = {};
-      for (let entry of pages.pageContent) {
-        // manually parse the date to get the year "2016-02-24T11:22:22+0000",
-        let year = entry.created_time.split('-')[0];
-        entry.safe_created_time = entry.created_time.slice(0,19);
-        // push or create
-        (rows[year] = rows[year] || []).push(entry);
+  reloadPageInfoIfNeeded(pages) {
+    const { dispatch } = this.props
 
-        this.props.dispatch(actionCreators.postInsights(entry.id))
-      }
-      callback(rows);
+    if (pages.currentPageId) {
+      dispatch(actionCreators.pageInfo(pages.currentPageId)).then( () => {
+        dispatch(actionCreators.pageContent(pages.currentPageId, pages.shown)).then(
+          (newContent) => {
+            console.log(newContent.data)
+            // dispatch to get the insights for each post
+            for (let entry of Object.values(newContent.data)) {
+              console.log(entry)
+              dispatch(actionCreators.postInsights(entry.id))
+            }
+        })
+      });
     }
   }
 
-  _renderSectionHeaderView(sectionData, sectionID) {
+  renderSectionHeaderView(sectionData, sectionID) {
     return (
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderTitle}>
+      <React.View style={styles.sectionHeader}>
+        <React.Text style={styles.sectionHeaderTitle}>
           {sectionID}
-        </Text>
-      </View>
+        </React.Text>
+      </React.View>
     );
   }
 
-  _renderPhoto(photo) {
+  renderPhoto(photo) {
     var height = window.width * (photo.height / photo.width);
     return (
-      <View style={styles.imageBox} key={photo.key}>
-        <Image source={{uri: photo.src}} style={{
+      <React.View style={styles.imageBox} key={photo.key}>
+        <React.Image source={{uri: photo.src}} style={{
             width: window.width,
             height: height,
           }}
         />
-      </View>
+      </React.View>
     );
   }
 
-  _renderSeparatorView() {
+  renderSeparatorView() {
     return (
-      <View style={styles.separator} key={separatorCounter++}/>
+      <React.View style={styles.separator} key={separatorCounter++}/>
     );
   }
 
-  _renderRowView(entry) {
+  renderRowView(entry) {
     let contentView = [];
     switch (entry.type) {
       case "photo":
         let uniquify = 0;
         if (entry.message) {
           contentView.push(
-            <View key={entry.id+uniquify} style={styles.textBox}>
-              <Text style={styles.text}>{entry.message}</Text>
-            </View>
+            <React.View key={entry.id+uniquify} style={styles.textBox}>
+              <React.Text style={styles.text}>{entry.message}</React.Text>
+            </React.View>
           );
           uniquify++;
         }
         if (entry.attachments && entry.attachments.data) {
           for (let attachment of entry.attachments.data) {
             if (attachment.media && attachment.media.image) {
-              contentView.push(this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...attachment.media.image}));
+              contentView.push(this.renderPhoto({link: entry.link, key: entry.id+uniquify, ...attachment.media.image}));
               uniquify++;
             } else if (attachment.subattachments && attachment.subattachments.data) {
               for (let subattachment of attachment.subattachments.data) {
-                contentView.push(this._renderPhoto({link: entry.link, key: entry.id+uniquify, ...subattachment.media.image}));
+                contentView.push(this.renderPhoto({link: entry.link, key: entry.id+uniquify, ...subattachment.media.image}));
                 uniquify++;
               }
             }
@@ -118,23 +106,23 @@ class HomeScene extends React.Component {
         break;
       case "status":
         contentView.push(
-          <View key={entry.id} style={styles.textBox}>
-            <Text style={styles.text} key={entry.id}>{entry.message}</Text>
-          </View>
+          <React.View key={entry.id} style={styles.textBox}>
+            <React.Text style={styles.text} key={entry.id}>{entry.message}</React.Text>
+          </React.View>
         );
         break;
       case "link":
         contentView.push(
-          <View key={entry.id} style={styles.textBox}>
-            <Text style={styles.text}>
+          <React.View key={entry.id} style={styles.textBox}>
+            <React.Text style={styles.text}>
               {entry.message}
-            </Text>
-            <React.TouchableOpacity onPress={() => { this._safariView(entry.link) }}>
-              <Text style={styles.link}>
+            </React.Text>
+            <React.TouchableOpacity onPress={() => { SafariView.show({url: entry.link}) }}>
+              <React.Text style={styles.link}>
                 {entry.link}
-              </Text>
+              </React.Text>
             </React.TouchableOpacity>
-          </View>
+          </React.View>
         );
         break;
       case "video":
@@ -159,35 +147,35 @@ class HomeScene extends React.Component {
         insightsView = <Loading viewStyle={styles.loadingInsightsView}
                                 textStyle={styles.loadingInsightsText}
                                 activitySize="small"
-                                activityColor="#cccccc"
+                                activityColor="#ffffff"
                                 textMessage="Loading insights"/>;
       } else if (entry.insights.success) {
         if (entry.insights.content) {
-          insightsView = <Text style={styles.displayInsightsText}>This post has been viewed by {entry.insights.content.values[0].value} people.</Text>;
+          insightsView = <React.Text style={styles.displayInsightsText}>This post has been viewed by {entry.insights.content.values[0].value} people.</React.Text>;
         } else {
-          insightsView = <Text style={styles.displayInsightsText}>This post has no insights data</Text>;
+          insightsView = <React.Text style={styles.displayInsightsText}>This post has no insights data</React.Text>;
         }
       } else if (entry.insights.error) {
-        insightsView = <Text style={styles.displayInsightsText}>Error querying insights</Text>;
+        insightsView = <React.Text style={styles.displayInsightsText}>Error querying insights</React.Text>;
       }
     }
     return (
-      <View>
-        <View style={ styles.storyHeader } >
-          <Image source={{uri:entry.from.picture.data.url}} style={ styles.storyFromImage }/>
-          <Text style={ styles.storyDescription }>
-            <Text style={ styles.storyFromName }>{fromName}</Text>
-            <Text style={ styles.storyStory }>{story}</Text>
-          </Text>
+      <React.View>
+        <React.View style={ styles.storyHeader } >
+          <React.Image source={{uri:entry.from.picture.data.url}} style={ styles.storyFromImage }/>
+          <React.Text style={ styles.storyDescription }>
+            <React.Text style={ styles.storyFromName }>{fromName}</React.Text>
+            <React.Text style={ styles.storyStory }>{story}</React.Text>
+          </React.Text>
           <TimeAgo style={ styles.storyDate } interval={300000} time={entry.safe_created_time}/>
-        </View>
+        </React.View>
         { contentView.map( (item) => { return item; } ) }
         { insightsView }
-      </View>
+      </React.View>
     );
   }
 
-  _renderHeader() {
+  renderHeader() {
     let details = this.props.pages.pageInfo;
     let about   = details.about || "";
     let source  = details.cover? details.cover.source : "";
@@ -195,54 +183,45 @@ class HomeScene extends React.Component {
       about = about.substring(0,80) + "…";
     }
     return (
-      <View style={ styles.headerContainerView }>
-        <Image source={{uri: source}} resizeMode="cover" style={ styles.headerCoverImage }>
-          <View style={ styles.headerDetailsContainer }>
-            <Image source={{uri: details.picture.data.url}} style={ styles.headerPagePicture }/>
-            <View>
-              <Text style={ styles.headerPageName }>{details.name}</Text>
-              <Text style={ styles.headerPageAbout }>{about}</Text>
-            </View>
-          </View>
-        </Image>
-      </View>
+      <React.View style={ styles.headerContainerView }>
+        <React.Image source={{uri: source}} resizeMode="cover" style={ styles.headerCoverImage }>
+          <React.View style={ styles.headerDetailsContainer }>
+            <React.Image source={{uri: details.picture.data.url}} style={ styles.headerPagePicture }/>
+            <React.View>
+              <React.Text style={ styles.headerPageName }>{details.name}</React.Text>
+              <React.Text style={ styles.headerPageAbout }>{about}</React.Text>
+            </React.View>
+          </React.View>
+        </React.Image>
+      </React.View>
     );
-  }
-
-  _onFetch(page = 1, callback, options) {
-    this.props.dispatch(actionCreators.pageContent(this.props.pages.currentPageId, this.props.pages.shown)).then(() => {
-      this._receiveFeed(callback)
-    })
-  }
-
-  renderWithNavBar(component) {
-    return  (
-      <NavBar
-        title="Page"
-        leftButtonView={ <Icon name="navicon-round" size={24} color="#5A7EB0" /> }
-        onLeftPress={ this.props.openDrawer }
-        leftButtonStyle={ { alignItems: 'center' } }
-        buttonContainerStyle={{ width: 50, justifyContent: 'center' }}>
-          {component}
-      </NavBar>
-    )
   }
 
   render() {
     const { dispatch, pages } = this.props
 
+    let navBarProps = {
+      title:                "Page",
+      leftButtonView:       (<Icon name="navicon-round" size={24} color="#5A7EB0" />),
+      onLeftPress:          this.props.openDrawer,
+      leftButtonStyle:      { alignItems: 'center' },
+      buttonContainerStyle: { width: 50, justifyContent: 'center' }
+    }
+
     if (!pages.currentPageId) {
-      return this.renderWithNavBar(
-        <View style={ styles.textBox }>
-          <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
-            No page to manage
-          </Text>
-        </View>
+      return (
+        <NavBar {...navBarProps}>
+          <React.View style={ styles.textBox }>
+            <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
+              No page to manage
+            </React.Text>
+          </React.View>
+        </NavBar>
       )
     }
 
     if (pages.currentPageId && pages.requestingInfo) {
-      return this.renderWithNavBar(<Loading textMessage="Getting page details…"/>);
+      return (<NavBar {...navBarProps}><Loading textMessage="Getting page details…"/></NavBar>);
     }
 
     let errorBar = null;
@@ -252,34 +231,44 @@ class HomeScene extends React.Component {
     }
 
     if (pages.currentPageId && pages.successInfo) {
-      // when wrapping a ListView in a standard View, bound the height of the View
-      // here the height should be window.height - (64+48) -- for the navbar and the
-      // tabbar; but to allow transparency on the tabbar, I let the ListView go
-      // below the tabbar…
-      return this.renderWithNavBar(
-        <View style={{ height: window.height - 64}}>
+      return (
+        <NavBar {...navBarProps}>
           { errorBar }
-          <GiftedListView
-            rowView={this._renderRowView.bind(this)}
-            onFetch={this._onFetch.bind(this)}
-            firstLoader={true}
-            withSections={true}
-            headerView={this._renderHeader.bind(this)}
-            sectionHeaderView={this._renderSectionHeaderView.bind(this)}
-            renderSeparator={this._renderSeparatorView.bind(this)} />
-        </View>
+          <React.ListView
+            dataSource={this.props.dataSource}
+            renderRow={this.renderRowView.bind(this)}
+            renderHeader={this.renderHeader.bind(this)}
+            renderSectionHeader={this.renderSectionHeaderView.bind(this)}
+            renderSeparator={this.renderSeparatorView.bind(this)} />
+        </NavBar>
       )
     }
 
     // else
-    return this.renderWithNavBar(
-      <View style={ styles.textBox }>
-        <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
-          Error while loading page {pages.error}
-        </Text>
-      </View>
+    return (
+      <NavBar {...navBarProps}>
+        <React.View style={ styles.textBox }>
+          <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
+            Error while loading page {pages.error}
+          </React.Text>
+        </React.View>
+      </NavBar>
     )
   }
+}
+
+// Organise the data for the listView
+// with key on the Year for the sections
+function buildFeedDataSource(content) {
+  let feed = {};
+  for (let entry of Object.values(content)) {
+    // manually parse the date to get the year "2016-02-24T11:22:22+0000",
+    entry.year = entry.created_time.split('-')[0];
+    entry.safe_created_time = entry.created_time.slice(0,19);
+    // push or create
+    (feed[entry.year] = feed[entry.year] || []).push(entry);
+  }
+  return feed;
 }
 
 HomeScene.propTypes = {
@@ -289,9 +278,15 @@ HomeScene.propTypes = {
 }
 
 const mapStateToProps = (state) => {
+  const dataSource = new React.ListView.DataSource({
+    rowHasChanged:           (r1, r2) => r1.id !== r2.id,
+    sectionHeaderHasChanged: (s1, s2) => s1 !== s2
+  });
+
   return {
-    accounts: state.accounts,
-    pages:    state.pages,
+    accounts:   state.accounts,
+    pages:      state.pages,
+    dataSource: dataSource.cloneWithRowsAndSections(buildFeedDataSource(state.pages.pageContent))
   }
 }
 
@@ -349,18 +344,15 @@ const styles = React.StyleSheet.create({
   },
   sectionHeader: {
     backgroundColor: '#e8e8e8',
-    padding: 10,
+    padding: 2,
   },
   sectionHeaderTitle: {
     color: '#fff',
-    fontWeight: '800',
+    fontWeight: '400',
     textAlign: 'center',
     fontFamily: 'System',
-    fontSize: 18,
+    fontSize: 14,
     color: '#a8a8a8',
-    textShadowColor: "#c8c8c8",
-    textShadowOffset: {width: -1, height: -1},
-    textShadowRadius: 1,
   },
   separator: {
     height: 10,

@@ -39,10 +39,10 @@ NavBar.propTypes = {
 }
 
 NavBar.defaultProps = {
-  sceneContainerStyle:  { flex: 1 },
+  sceneContainerStyle:  { flex: 1, paddingTop: 64, paddingBottom: 30 },
   navBarContainerStyle: { paddingTop: 30, paddingBottom: 8, borderBottomWidth: 0.5,
     borderColor: '#b2b2b2', height: 64, backgroundColor: '#f8f8f8', flexDirection: 'row',
-    justifyContent: 'space-between', alignItems: 'stretch' },
+    justifyContent: 'space-between', alignItems: 'stretch', position: 'absolute', top: 0, left: 0, right: 0 },
   navBarTitleStyle:     { flex: 1, alignItems: 'center', justifyContent: 'center' },
   navBarTitleTextStyle: { fontFamily: 'System', fontWeight: '500', fontSize: 18 },
   buttonContainerStyle: { flex: 1, overflow:'hidden', justifyContent:'center' },

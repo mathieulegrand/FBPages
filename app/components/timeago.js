@@ -17,7 +17,7 @@ export default class TimeAgo extends React.Component {
   render() {
     return (
       <React.Text {...this.props}>
-        { Moment(this.props.time).calendar() }
+        { Moment(this.props.time).calendar(null, { sameElse: 'llll' }) }
       </React.Text>
     )
   }
