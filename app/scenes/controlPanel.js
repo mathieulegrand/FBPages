@@ -16,7 +16,7 @@ const controlMenu = (state) => ({
   'Help & Settings': [ {
     name:   (state.pages.shown === facebookAPI.FEED_PUBLISHED? "Show unpublished" : "Show published"),
     action: (dispatch) => {
-      dispatch(actionCreators.pageContent(
+      dispatch(actionCreators.pageContentWithInsights(
         state.pages.currentPageId,
         state.pages.shown === facebookAPI.FEED_PUBLISHED? facebookAPI.FEED_ALL : facebookAPI.FEED_PUBLISHED))
     },

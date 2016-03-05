@@ -185,6 +185,20 @@ export function postInsights(postId) {
   }
 }
 
+// -- special function to bundle pageContent and postInsights
+export function pageContentWithInsights(pageId, postsToShow=facebookAPI.FEED_PUBLISHED) {
+  return dispatch => {
+    return new Promise ( (resolve, reject) => {
+      dispatch(pageContent(pageId, postsToShow)).then( (newContent) => {
+        for (let entry of Object.values(newContent.data)) {
+          dispatch(postInsights(entry.id))
+        }
+        resolve()
+      }).catch( (error) => { reject(error) })
+    })
+  }
+}
+
 export function getPageToken(pageId, permissions=['manage_pages']) {
   return dispatch => {
     dispatch(publishPermissionsFetch())

@@ -33,16 +33,8 @@ class HomeScene extends React.Component {
 
     if (pages.currentPageId) {
       dispatch(actionCreators.pageInfo(pages.currentPageId)).then( () => {
-        dispatch(actionCreators.pageContent(pages.currentPageId, pages.shown)).then(
-          (newContent) => {
-            console.log(newContent.data)
-            // dispatch to get the insights for each post
-            for (let entry of Object.values(newContent.data)) {
-              console.log(entry)
-              dispatch(actionCreators.postInsights(entry.id))
-            }
-        })
-      });
+        dispatch(actionCreators.pageContentWithInsights(pages.currentPageId, pages.shown))
+      })
     }
   }
 
