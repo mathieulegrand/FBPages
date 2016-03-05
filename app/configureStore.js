@@ -8,6 +8,7 @@ import rootReducer     from './reducers'
 
 const loggerMiddleware = createLogger()
 
+// -- create a Redux store, attached to both thunk and logger middlewares
 export default function configureStore(initialState) {
   return createStore(
     rootReducer,

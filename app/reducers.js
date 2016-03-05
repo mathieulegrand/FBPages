@@ -1,5 +1,8 @@
 'use strict'
 
+// From here, we mutate the global Redux stores.
+// The reducers are triggered from dispatched Actions.
+
 import { combineReducers } from 'redux'
 import {
   LOGIN_REQUEST,
@@ -34,8 +37,11 @@ import {
   POST_SENT_CLEAR,
 } from './actions'
 
-import * as facebookAPI from './facebookAPI'
+import {
+  FEED_PUBLISHED
+} from './facebookAPI'
 
+// the Login store
 const initialLoginState = {
   requesting: false,
   success:    false,
@@ -73,6 +79,7 @@ const login = (state = initialLoginState, action) => {
   }
 }
 
+// the Accounts store (list of Pages)
 const initialAccountsState = {
   requesting: false,
   success:    false,
@@ -105,6 +112,7 @@ const accounts = (state = initialAccountsState, action) => {
   }
 }
 
+// the Pages store
 const initialPagesState = {
   currentPageId:         undefined,
   // all about showing the current page and its header
@@ -114,11 +122,11 @@ const initialPagesState = {
   successInfo:           false,
   requestingContent:     false,
   successContent:        false,
-  shown:                 facebookAPI.FEED_PUBLISHED,
+  shown:                 FEED_PUBLISHED, // from facebookAPI
   error:                 null,
   // getting Page publish token related
   publishPermissions:    [],
-  pageToken:             undefined,
+  pageToken:             undefined, // +FIXME: should the token be Page specific?
   requestingPermissions: false,
   successPermissions:    false,
   errorPermissions:      null,

@@ -15,9 +15,14 @@ export default class Loading extends React.Component {
   }
 }
 
+Loading.propTypes = {
+  activitySize:  React.PropTypes.oneOf(['large', 'small']),
+  activityColor: React.PropTypes.string,
+}
+
 Loading.defaultProps = {
   viewStyle:     { flex: 1, alignItems: 'center', justifyContent: 'center' },
   textStyle:     { margin: 20, textAlign: 'center', fontFamily: 'System', fontSize: 20 },
-  activitySize:  "large",
+  activitySize:  'large',
   activityColor: "#3b5998",
 }

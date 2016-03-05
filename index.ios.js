@@ -9,11 +9,13 @@
  * Author: Mathieu Legrand <mathieu@legrand.im>.
  *
 **/
-'use strict';
+'use strict'
 
-import React        from 'react-native'
-import { Provider } from 'react-redux'
+// -- React and Redux main libraries
+import React          from 'react-native'
+import { Provider }   from 'react-redux'
 
+// -- Main redux store configuration, and Root component
 import configureStore from './app/configureStore'
 import Root           from './app/root'
 
@@ -29,4 +31,4 @@ export default class FBPages extends React.Component {
   }
 }
 
-React.AppRegistry.registerComponent('FBPages', () => FBPages);
+React.AppRegistry.registerComponent('FBPages', () => FBPages)

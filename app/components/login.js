@@ -19,7 +19,7 @@ import * as actionCreators from '../actions'
 // requires a publish).
 class Login extends React.Component {
   render() {
-    const { dispatch, login } = this.props
+    const { dispatch } = this.props
     return (
       <React.View style={this.props.style}>
         <FBSDKLogin.FBSDKLoginButton
@@ -45,13 +45,12 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  dispatch:           React.PropTypes.func.isRequired,
-  login:              React.PropTypes.object,
-  readPermissions:    React.PropTypes.array,
+  dispatch:        React.PropTypes.func.isRequired,
+  readPermissions: React.PropTypes.array,
 }
 
 Login.defaultProps = {
-  readPermissions:    [],
+  readPermissions: [],
 }
 
 const mapStateToProps = (state) => { return { login: state.login } }
@@ -59,8 +58,5 @@ const mapStateToProps = (state) => { return { login: state.login } }
 export default connect(mapStateToProps)(Login);
 
 const styles = React.StyleSheet.create({
-  loginButton: {
-    width: 200,
-    height: 50,
-  },
+  loginButton: { width: 200, height: 50, },
 });

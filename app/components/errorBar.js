@@ -19,6 +19,11 @@ export default class ErrorBar extends React.Component {
   }
 }
 
+ErrorBar.propTypes = {
+  onPress:   React.PropTypes.func,
+  green:     React.PropTypes.bool,
+}
+
 ErrorBar.defaultProps = {
   onPress:   null,
   green:     false,

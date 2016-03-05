@@ -23,6 +23,10 @@ export default class TimeAgo extends React.Component {
   }
 }
 
+TimeAgo.propTypes = {
+  interval: React.PropTypes.number,
+}
+
 TimeAgo.defaultProps = {
-  interval: 60000, // every minute
+  interval: 60000, // every minute by default
 }
