@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react-native'
-import Login from './login'
+import Login from '../components/login'
 
 // Welcome only request readPermissions (see comment in login.js)
 export default class WelcomeScene extends React.Component {

@@ -1,7 +1,5 @@
 'use strict'
 
-import _ from 'lodash'
-
 // -- React components
 import React  from 'react-native'
 import Drawer from 'react-native-drawer'
@@ -11,12 +9,14 @@ import Icon   from 'react-native-vector-icons/Ionicons'
 import { connect }         from 'react-redux'
 import * as actionCreators from './actions'
 
+// -- My scenes
+import ControlPanel  from './scenes/controlPanel'
+import WelcomeScene  from './scenes/welcomeScene'
+import HomeScene     from './scenes/homeScene'
+import PostScene     from './scenes/postScene'
+
 // -- My components
-import ControlPanel      from './controlPanel'
-import WelcomeScene      from './welcomeScene'
-import HomeScene         from './homeScene'
-import PostScene         from './postScene'
-import LoadingScene      from './loadingScene'
+import Loading       from './components/loading'
 
 class Root extends React.Component {
   closeDrawer = () => { this.refs.drawer.close() };
@@ -36,7 +36,7 @@ class Root extends React.Component {
     this.setState({ selectedTab: this.defaultTab });
   }
 
-  _tabItem(options) {
+  makeTabItem(options) {
     let route = <HomeScene openDrawer={ this.openDrawer.bind(this) }/>;
     if (options.route === 'Post') {
       route = <PostScene gotoDefaultTab={ this.gotoDefaultTab.bind(this) }/>;
@@ -87,9 +87,9 @@ class Root extends React.Component {
     // we might need a better logic to allow user to retry if he gets stuck
     // on one of those screens for a long time…
     if (login.requesting) {
-      return (<LoadingScene textMessage="Connecting to Facebook…"/>);
+      return (<Loading textMessage="Connecting to Facebook…"/>);
     } else if (login.success && (!accounts.success || accounts.requesting)) {
-      return (<LoadingScene textMessage="Requesting list of accounts…"/>);
+      return (<Loading textMessage="Requesting list of accounts…"/>);
     }
 
     // If we are not logged in, display a welcome / login screen
@@ -105,15 +105,15 @@ class Root extends React.Component {
                 tapToClose={true}
                 content={<ControlPanel closeDrawer={ this.closeDrawer.bind(this) }/>}>
           <React.TabBarIOS>
-            { this._tabItem({ title:            'Page',
-                              iconName:         'ios-list-outline',
-                              selectedIconName: 'ios-list',
-                              route:            'Home' }) }
+            { this.makeTabItem({ title:            'Page',
+                                 iconName:         'ios-list-outline',
+                                 selectedIconName: 'ios-list',
+                                 route:            'Home' }) }
 
-            { this._tabItem({ title:            'New Post',
-                              iconName:         'ios-plus-outline',
-                              selectedIconName: 'ios-plus',
-                              route:            'Post' })}
+            { this.makeTabItem({ title:            'New Post',
+                                 iconName:         'ios-plus-outline',
+                                 selectedIconName: 'ios-plus',
+                                 route:            'Post' })}
           </React.TabBarIOS>
         </Drawer>
       );

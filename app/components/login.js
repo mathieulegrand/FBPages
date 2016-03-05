@@ -2,12 +2,12 @@
 
 'use strict'
 
-import React,      { StyleSheet, View } from 'react-native'
-import FBSDKLogin, { FBSDKLoginButton } from 'react-native-fbsdklogin'
+import React      from 'react-native'
+import FBSDKLogin from 'react-native-fbsdklogin'
 
 // -- Redux store related
 import { connect }         from 'react-redux'
-import * as actionCreators from './actions'
+import * as actionCreators from '../actions'
 
 // Allows to request only readPermissions
 // see https://github.com/facebook/react-native-fbsdk/issues/52
@@ -21,8 +21,8 @@ class Login extends React.Component {
   render() {
     const { dispatch, login } = this.props
     return (
-      <View style={this.props.style}>
-        <FBSDKLoginButton
+      <React.View style={this.props.style}>
+        <FBSDKLogin.FBSDKLoginButton
           style={styles.loginButton}
           onLoginFinished={(error, result) => {
             if (error) {
@@ -39,7 +39,7 @@ class Login extends React.Component {
             dispatch(actionCreators.logoutSuccess());
           }}
           readPermissions={ this.props.readPermissions }/>
-      </View>
+      </React.View>
     );
   }
 }

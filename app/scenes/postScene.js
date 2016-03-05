@@ -1,12 +1,13 @@
 'use strict';
 
-import React, { View, Text, TextInput, ScrollView, Dimensions, DeviceEventEmitter } from 'react-native';
-import * as facebookAPI from './facebookAPI'
+import React, { Dimensions } from 'react-native';
 
 // -- Redux store related
 import { connect }         from 'react-redux'
-import * as actionCreators from './actions'
-import ErrorBar            from './components/errorBar'
+import * as actionCreators from '../actions'
+
+import * as facebookAPI    from '../facebookAPI'
+import ErrorBar            from '../components/errorBar'
 
 var buttonsGap    = 50;
 var navBarHeight  = 64;
@@ -26,8 +27,8 @@ class PostScene extends React.Component {
 
   componentWillMount () {
     // this is used to resize the view when the keyboard appears / disappears
-    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    React.DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    React.DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
 
     // get Publish token when the user first switch to the view
     // ignore the error, as `render` will show an error message for the user
@@ -72,26 +73,26 @@ class PostScene extends React.Component {
 
   renderWithNavBar(component) {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={styles.navBarContainer}>
+      <React.View style={{ flex: 1 }}>
+        <React.View style={styles.navBarContainer}>
           <React.TouchableOpacity
             onPress={ this.props.gotoDefaultTab }
             style={ [ styles.buttonContainer, { alignItems: 'flex-start' } ] }>
-            <Text style={styles.buttonText}>Cancel</Text>
+            <React.Text style={styles.buttonText}>Cancel</React.Text>
           </React.TouchableOpacity>
-          <View style={styles.navBarTitle}>
+          <React.View style={styles.navBarTitle}>
             <React.Text style={styles.navBarTitleText}>
               Page
             </React.Text>
-          </View>
+          </React.View>
           <React.TouchableOpacity
             onPress={ this.sendPost.bind(this) }
             style={ [ styles.buttonContainer, { alignItems: 'flex-end' } ] }>
-            <Text style={styles.buttonText}>Post</Text>
+            <React.Text style={styles.buttonText}>Post</React.Text>
           </React.TouchableOpacity>
-        </View>
+        </React.View>
         { component }
-      </View>
+      </React.View>
     );
   }
 
@@ -108,9 +109,9 @@ class PostScene extends React.Component {
     }
 
     return this.renderWithNavBar(
-      <View style={{height: this.state.visibleHeight}}>
+      <React.View style={{height: this.state.visibleHeight}}>
         { errorView }
-        <TextInput multiline={true}
+        <React.TextInput multiline={true}
           onChangeText={(text) => {
             this.state.post.data = text;
           }}
@@ -119,8 +120,8 @@ class PostScene extends React.Component {
           placeholder="Write something…"
           style={[styles.input, {height:this.state.visibleHeight}]}
         />
-        <View><Text>Here are more buttons</Text></View>
-      </View>
+        <React.View><React.Text>Here are more buttons</React.Text></React.View>
+      </React.View>
     );
   }
 }

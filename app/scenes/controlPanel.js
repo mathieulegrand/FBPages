@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
-import _ from 'lodash'
-import React, { View, Text, TouchableOpacity } from 'react-native'
-import Icon   from 'react-native-vector-icons/Ionicons';
+import _     from 'lodash'
+import React from 'react-native'
+import Icon  from 'react-native-vector-icons/Ionicons'
 
 // -- Redux store related
 import { connect }         from 'react-redux'
-import * as actionCreators from './actions'
-import * as facebookAPI    from './facebookAPI'
+import * as actionCreators from '../actions'
 
-import Login  from './login'
+import * as facebookAPI    from '../facebookAPI'
+import Login               from '../components/login'
 
 // the default menu of the Drawer
 const controlMenu = (state) => ({
@@ -37,11 +37,11 @@ const PAGES_SECTION = 'Pages'
 export default class ControlPanel extends React.Component {
   renderSectionHeader(sectionData, sectionID) {
     return (
-      <View style={ styles.headerView }>
-        <Text style={ styles.headerText }>
+      <React.View style={ styles.headerView }>
+        <React.Text style={ styles.headerText }>
           { String(sectionID).toUpperCase() }
-        </Text>
-      </View>
+        </React.Text>
+      </React.View>
     )
   }
 
@@ -61,17 +61,17 @@ export default class ControlPanel extends React.Component {
       }
     }
     return (
-      <TouchableOpacity onPress={ (typeof item.action === 'function')?
-                                    item.action.bind(undefined, this.props.dispatch) :
-                                    null }
+      <React.TouchableOpacity onPress={ (typeof item.action === 'function')?
+                                item.action.bind(undefined, this.props.dispatch) :
+                                null }
                         style={ styleRowView }>
-        <View style={ styles.iconView }>
+        <React.View style={ styles.iconView }>
           { typeof item.icon === 'function'? item.icon() : item.icon }
-        </View>
-        <Text style={ styles.rowText }>
+        </React.View>
+        <React.Text style={ styles.rowText }>
           {item.name}
-        </Text>
-      </TouchableOpacity>
+        </React.Text>
+      </React.TouchableOpacity>
     );
   }
 

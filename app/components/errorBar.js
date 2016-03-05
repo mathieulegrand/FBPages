@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { View, Modal, TouchableHighlight } from 'react-native';
+import React from 'react-native'
 
 export default class ErrorBar extends React.Component {
   render() {
@@ -9,12 +9,12 @@ export default class ErrorBar extends React.Component {
       backgroundColor = '#108010'   // Green
     }
     return (
-      <TouchableHighlight style={ [this.props.viewStyle, { backgroundColor: backgroundColor }]}
-                          onPress={ () => { typeof this.props.onPress === 'function'? this.props.onPress() : null} }>
+      <React.TouchableHighlight style={ [this.props.viewStyle, { backgroundColor: backgroundColor }]}
+        onPress={ () => { typeof this.props.onPress === 'function'? this.props.onPress() : null} }>
         <React.Text style={this.props.textStyle}>
           { this.props.textMessage }
         </React.Text>
-      </TouchableHighlight>
+      </React.TouchableHighlight>
     );
   }
 }

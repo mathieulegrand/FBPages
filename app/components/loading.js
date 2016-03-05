@@ -1,21 +1,21 @@
-'use strict';
+'use strict'
 
-import React, { View, Text, ActivityIndicatorIOS } from 'react-native';
+import React from 'react-native'
 
-export default class LoadingScene extends React.Component {
+export default class Loading extends React.Component {
   render() {
     return (
-      <View style={this.props.viewStyle}>
-        <Text style={this.props.textStyle}>
+      <React.View style={this.props.viewStyle}>
+        <React.Text style={this.props.textStyle}>
           { this.props.textMessage }
-        </Text>
+        </React.Text>
         <React.ActivityIndicatorIOS size={this.props.activitySize} color={this.props.activityColor} />
-      </View>
-    );
+      </React.View>
+    )
   }
 }
 
-LoadingScene.defaultProps = {
+Loading.defaultProps = {
   viewStyle:     { flex: 1, alignItems: 'center', justifyContent: 'center' },
   textStyle:     { margin: 20, textAlign: 'center', fontFamily: 'System', fontSize: 20 },
   activitySize:  "large",

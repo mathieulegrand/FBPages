@@ -1,7 +1,6 @@
 'use strict';
 
 import React, { View, Text, Image }     from 'react-native';
-import FBSDKCore, { FBSDKGraphRequest } from 'react-native-fbsdkcore';
 
 import GiftedListView from 'react-native-gifted-listview';
 import SafariView     from 'react-native-safari-view'
@@ -12,11 +11,11 @@ var window = Dimensions.get('window');
 
 // -- Redux store related
 import { connect }         from 'react-redux'
-import * as actionCreators from './actions'
+import * as actionCreators from '../actions'
 
-import TimeAgo      from './components/timeago';
-import LoadingScene from './loadingScene'
-import ErrorBar     from './components/errorBar'
+import TimeAgo   from '../components/timeago'
+import ErrorBar  from '../components/errorBar'
+import Loading   from '../components/loading'
 
 let separatorCounter = 0;
 
@@ -156,11 +155,11 @@ class HomeScene extends React.Component {
     let insightsView = null;
     if (entry.insights) {
       if (entry.insights.requesting) {
-        insightsView = <LoadingScene viewStyle={styles.loadingInsightsView}
-                                     textStyle={styles.loadingInsightsText}
-                                     activitySize="small"
-                                     activityColor="#cccccc"
-                                     textMessage="Loading insights"/>;
+        insightsView = <Loading viewStyle={styles.loadingInsightsView}
+                                textStyle={styles.loadingInsightsText}
+                                activitySize="small"
+                                activityColor="#cccccc"
+                                textMessage="Loading insights"/>;
       } else if (entry.insights.success) {
         if (entry.insights.content) {
           insightsView = <Text style={styles.displayInsightsText}>This post has been viewed by {entry.insights.content.values[0].value} people.</Text>;
@@ -254,7 +253,7 @@ class HomeScene extends React.Component {
     }
 
     if (pages.currentPageId && pages.requestingInfo) {
-      return this.renderWithNavBar(<LoadingScene textMessage="Getting page details…"/>);
+      return this.renderWithNavBar(<Loading textMessage="Getting page details…"/>);
     }
 
     let errorBar = null;
