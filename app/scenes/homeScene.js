@@ -212,8 +212,12 @@ class HomeScene extends React.Component {
       )
     }
 
-    if (pages.currentPageId && pages.requestingInfo) {
+    if (pages.requestingInfo) {
       return (<NavBar {...navBarProps}><Loading textMessage="Getting page details…"/></NavBar>);
+    }
+
+    if (pages.requestingContent) {
+      return (<NavBar {...navBarProps}><Loading textMessage="Getting page posts…"/></NavBar>);
     }
 
     let errorBar = null;

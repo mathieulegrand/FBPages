@@ -191,7 +191,9 @@ export function pageContentWithInsights(pageId, postsToShow=facebookAPI.FEED_PUB
     return new Promise ( (resolve, reject) => {
       dispatch(pageContent(pageId, postsToShow)).then( (newContent) => {
         for (let entry of Object.values(newContent.data)) {
-          dispatch(postInsights(entry.id))
+          if (entry.id) {
+            dispatch(postInsights(entry.id))
+          }
         }
         resolve()
       }).catch( (error) => { reject(error) })
