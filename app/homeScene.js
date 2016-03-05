@@ -5,6 +5,7 @@ import FBSDKCore, { FBSDKGraphRequest } from 'react-native-fbsdkcore';
 
 import GiftedListView from 'react-native-gifted-listview';
 import SafariView     from 'react-native-safari-view'
+import Icon           from 'react-native-vector-icons/Ionicons';
 import Dimensions     from 'Dimensions';
 
 var window = Dimensions.get('window');
@@ -15,6 +16,7 @@ import * as actionCreators from './actions'
 
 import TimeAgo      from './timeago';
 import LoadingScene from './loadingScene'
+import ErrorBar     from './errorBar'
 
 let separatorCounter = 0;
 
@@ -208,7 +210,6 @@ class HomeScene extends React.Component {
   }
 
   _onFetch(page = 1, callback, options) {
-    console.log(this.props);
     this.props.dispatch(actionCreators.pageContent(this.props.pages.currentPageId, this.props.pages.shown)).then(() => {
       this._receiveFeed(callback)
     })
@@ -218,11 +219,33 @@ class HomeScene extends React.Component {
     return 'Page';
   }
 
+  renderWithNavBar(component) {
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={styles.navBarContainer}>
+          <React.TouchableOpacity
+            onPress={ this.props.openDrawer }
+            style={styles.buttonContainer}>
+            <Icon name="navicon-round" size={24} color="#5A7EB0" />
+          </React.TouchableOpacity>
+          <View style={styles.navBarTitle}>
+            <React.Text style={styles.navBarTitleText}>
+              Page
+            </React.Text>
+          </View>
+          <View style={styles.buttonContainer}/>
+        </View>
+        <ErrorBar green={true} display={true} id={separatorCounter++} textMessage="Test 123"/>
+        {component}
+      </View>
+    );
+  }
+
   render() {
     const { dispatch, pages } = this.props
 
     if (!pages.currentPageId) {
-      return (
+      return this.renderWithNavBar(
         <View style={ styles.textBox }>
           <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
             No page to manage
@@ -232,11 +255,11 @@ class HomeScene extends React.Component {
     }
 
     if (pages.currentPageId && pages.requestingInfo) {
-      return (<LoadingScene textMessage="Getting page details…"/>);
+      return this.renderWithNavBar(<LoadingScene textMessage="Getting page details…"/>);
     }
 
     if (pages.currentPageId && pages.successInfo) {
-      return (
+      return this.renderWithNavBar(
         <GiftedListView
           rowView={this._renderRowView.bind(this)}
           onFetch={this._onFetch.bind(this)}
@@ -248,7 +271,7 @@ class HomeScene extends React.Component {
         />
       );
     } else {
-      return (
+      return this.renderWithNavBar(
         <View style={ styles.textBox }>
           <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
             Error while loading page {pages.error}
@@ -409,5 +432,32 @@ const styles = React.StyleSheet.create({
     fontFamily: 'System',
     fontSize: 12,
     fontStyle: 'italic'
+  },
+  navBarContainer: {
+    paddingTop: 30,
+    paddingBottom: 8,
+    borderBottomWidth: 0.5,
+    borderColor: '#b2b2b2',
+    height: 64,
+    backgroundColor: '#f8f8f8',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+  },
+  navBarTitle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent:'center',
+  },
+  navBarTitleText:{
+    fontFamily: 'System',
+    fontWeight: '500',
+    fontSize:   18,
+  },
+  buttonContainer: {
+    width: 50,
+    overflow:'hidden',
+    alignItems: 'center',
+    justifyContent:'center',
   },
 });

@@ -12,7 +12,6 @@ import { connect }         from 'react-redux'
 import * as actionCreators from './actions'
 
 // -- My components
-import NavBarRouteMapper from './router'
 import ControlPanel      from './controlPanel'
 import WelcomeScene      from './welcomeScene'
 import HomeScene         from './homeScene'
@@ -38,48 +37,20 @@ class Root extends React.Component {
   }
 
   _tabItem(options) {
+    let route = <HomeScene openDrawer={ this.openDrawer.bind(this) }/>;
+    if (options.route === 'Post') {
+      route = <PostScene gotoDefaultTab={ this.gotoDefaultTab.bind(this) }/>;
+    }
+
     return (
       <Icon.TabBarItem title={ options.title }
                        selected={ this.state.selectedTab === options.title }
                        onPress={() => { this.setState({ selectedTab: options.title }); }}
                        iconName={ options.iconName }
                        selectedIconName={ options.selectedIconName }>
-        { options.route ? this._navigator(options.route) : null }
+        { route }
       </Icon.TabBarItem>
     );
-  }
-
-  _navigator(myRoute) {
-    return (
-      <React.Navigator
-        ref="navigator"
-        showNavigationBar={true}
-        initialRoute={ { id: myRoute } }
-        style={ styles.navigator }
-        renderScene={ this.navigatorRenderScene.bind(this) }
-        openDrawer={ this.openDrawer.bind(this) }
-        gotoDefaultTab={ this.gotoDefaultTab.bind(this) }
-        sceneStyle={ styles.scene }
-        navigationBar={ <React.Navigator.NavigationBar routeMapper={NavBarRouteMapper}
-                                                       style={styles.navBar}/> }
-      />
-    );
-  }
-
-  navigatorRenderScene(route, navigator) {
-    switch (route.id) {
-      case 'Home':
-        if (typeof this.props.pages.currentPageId === 'string') {
-          let pageId = this.props.pages.currentPageId;
-          return (<HomeScene navigator={navigator} visibilityProfile='published'/>);
-        }
-        break;
-      case 'Post':
-        return (<PostScene navigator={navigator}/>);
-      default:
-        console.log("unknown route", route.id);
-    }
-    return null;
   }
 
   componentWillMount() {

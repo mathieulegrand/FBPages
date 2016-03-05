@@ -27,6 +27,20 @@ export const POSTINSIGHTS_FETCH         = 'POSTINSIGHTS_FETCH'
 export const POSTINSIGHTS_FETCH_SUCCESS = 'POSTINSIGHTS_FETCH_SUCCESS'
 export const POSTINSIGHTS_FETCH_FAILURE = 'POSTINSIGHTS_FETCH_FAILURE'
 
+export const PUBLISH_PERMISSIONS_FETCH   = 'PUBLISH_PERMISSIONS_FETCH'
+export const PUBLISH_PERMISSIONS_SUCCESS = 'PUBLISH_PERMISSIONS_SUCCESS'
+export const PUBLISH_PERMISSIONS_FAILURE = 'PUBLISH_PERMISSIONS_FAILURE'
+export const PAGE_TOKEN_FETCH            = 'PAGE_TOKEN_FETCH'
+export const PAGE_TOKEN_FETCH_SUCCESS    = 'PAGE_TOKEN_FETCH_SUCCESS'
+export const PAGE_TOKEN_FETCH_FAILURE    = 'PAGE_TOKEN_FETCH_FAILURE'
+
+export const POST_SEND         = 'POST_SEND'
+export const POST_SEND_SUCCESS = 'POST_SEND_SUCCESS'
+export const POST_SEND_FAILURE = 'POST_SEND_FAILURE'
+
+export const TOKEN_ERRORS_CLEAR = 'TOKEN_ERRORS_CLEAR'
+export const POST_ERRORS_CLEAR  = 'POST_ERRORS_CLEAR'
+
 // -- action creators
 export const loginRequest   = () => ({type: LOGIN_REQUEST})
 export const loginSuccess   = () => ({type: LOGIN_SUCCESS})
@@ -36,7 +50,7 @@ export const loginFailure   = (error) => ({type: LOGIN_FAILURE, error})
 
 export const pageSetCurrent = (pageid)   => ({type: PAGE_SET_CURRENT, pageid})
 
-const accountsFetch        = () => ({type: ACCOUNTS_FETCH})
+const accountsFetch        = ()         => ({type: ACCOUNTS_FETCH})
 const accountsFetchSuccess = (accounts) => ({type: ACCOUNTS_FETCH_SUCCESS, accounts})
 const accountsFetchFailure = (error)    => ({type: ACCOUNTS_FETCH_FAILURE, error})
 
@@ -44,7 +58,7 @@ const pageinfoFetch        = ()         => ({type: PAGEINFO_FETCH})
 const pageinfoFetchSuccess = (pageinfo) => ({type: PAGEINFO_FETCH_SUCCESS, pageinfo})
 const pageinfoFetchFailure = (error)    => ({type: PAGEINFO_FETCH_FAILURE, error})
 
-const pagecontentFetch        = ()            => ({type: PAGECONTENT_FETCH})
+const pagecontentFetch        = ()                   => ({type: PAGECONTENT_FETCH})
 const pagecontentFetchSuccess = (pagecontent, shown) => ({
   type: PAGECONTENT_FETCH_SUCCESS,
   pagecontent,
@@ -66,6 +80,20 @@ const postinsightsFetchFailure = (postid, error) => ({
   postid,
   error,
 })
+
+const publishPermissionsFetch    = ()       => ({type: PUBLISH_PERMISSIONS_FETCH})
+const publishPermissionsSuccess  = (result) => ({type: PUBLISH_PERMISSIONS_SUCCESS, result})
+const publishPermissionsFailure  = (error)  => ({type: PUBLISH_PERMISSIONS_FAILURE, error})
+const pageTokenFetch             = ()       => ({type: PAGE_TOKEN_FETCH})
+const pageTokenFetchSuccess      = (result) => ({type: PAGE_TOKEN_FETCH_SUCCESS, result})
+const pageTokenFetchFailure      = (error)  => ({type: PAGE_TOKEN_FETCH_FAILURE, error})
+
+const postSend            = ()       => ({type: POST_SEND})
+const postSendSuccess     = (result) => ({type: POST_SEND_SUCCESS, result})
+const postSendFailure     = (error)  => ({type: POST_SEND_FAILURE, error})
+
+const tokenErrorsClear    = () => ({type: TOKEN_ERRORS_CLEAR})
+const postErrorsClear     = () => ({type: POST_ERRORS_CLEAR})
 
 // -- action methods
 // export function login() {
@@ -145,11 +173,59 @@ export function postInsights(postId) {
     dispatch(postinsightsFetch(postId))
     return new Promise( (resolve, reject) => {
       facebookAPI.postInsights(postId).then((postInsights) => {
-        console.log("----",postId, postInsights);
         dispatch(postinsightsFetchSuccess(postId, postInsights))
         resolve()
       }).catch((error) => {
         dispatch(postinsightsFetchFailure(postId, error))
+        reject(error)
+      })
+    })
+  }
+}
+
+export function clearTokenErrors() {
+  return dispatch => {
+    dispatch(tokenErrorsClear());
+  }
+}
+
+export function clearPostErrors() {
+  return dispatch => {
+    dispatch(postErrorsClear());
+  }
+}
+
+export function getPageToken(pageId, permissions=['manage_pages']) {
+  return dispatch => {
+    dispatch(publishPermissionsFetch())
+    return new Promise( (resolve, reject) => {
+      facebookAPI.getPublishPermissions(permissions).then( (result) => {
+        dispatch(publishPermissionsSuccess(result))
+        dispatch(pageTokenFetch())
+        facebookAPI.pageToken(pageId).then( (result) => {
+          dispatch(pageTokenFetchSuccess(result))
+          resolve(result)
+        }).catch( (error) => {
+          dispatch(pageTokenFetchFailure(error))
+          reject(error)
+        })
+      }).catch( (error) => {
+        dispatch(publishPermissionsFailure(error))
+        reject(error)
+      })
+    })
+  }
+}
+
+export function sendPost(pageId, token, parameters) {
+  return dispatch => {
+    dispatch(postSend())
+    return new Promise( (resolve, reject) => {
+      facebookAPI.sendPost(pageId, token, parameters).then((result) => {
+        dispatch(postSendSuccess(result))
+        resolve(result)
+      }).catch((error) => {
+        dispatch(postSendFailure(error))
         reject(error)
       })
     })

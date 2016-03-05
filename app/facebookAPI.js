@@ -3,20 +3,16 @@
 import FBSDKCore,  { FBSDKGraphRequest } from 'react-native-fbsdkcore';
 import FBSDKLogin, { FBSDKLoginManager } from 'react-native-fbsdklogin';
 
-export function getPublishPermissions() {
+export function getPublishPermissions(permissions = []) {
   return new Promise((resolve, reject) => {
-    FBSDKLoginManager.logInWithPublishPermissions(['manage_pages'], (error, result) => {
+    FBSDKLoginManager.logInWithPublishPermissions(permissions, (error, result) => {
       if (error) {
         reject('error: ' + error);
       } else {
         if (result.isCancelled) {
           reject('error: login cancelled');
         } else {
-          getInfo().then((userDetails) => {
-            resolve(userDetails);
-          }).catch((requestError) => {
-            reject(requestError);
-          });
+          resolve(result);
         }
       }
     });
@@ -42,6 +38,18 @@ export const pageDetails  = (pageId) =>
 export const postInsights = (postId) =>
   graphRequest(`/${postId}/insights/post_impressions_unique/lifetime`, { fields: { string: 'name,id,period,values' } })
 
+export const pageToken = (pageId) =>
+  graphRequest(`/${pageId}`, { fields: { string: 'access_token' }})
+
+// using Page Token /652947674860909/feed?message=test&published=false
+export const sendPost = (pageId, token, fields) => {
+  let parameters = {};
+  for (let key of Object.keys(fields)) {
+    parameters[key] = { string: fields[key].toString() }
+  }
+  return graphRequest(`/${pageId}/feed`, parameters, token, undefined, 'POST')
+}
+
 export const FEED_PUBLISHED   = 'published'
 export const FEED_UNPUBLISHED = 'unpublished'
 export const FEED_ALL         = 'all'
@@ -60,15 +68,16 @@ export const pageFeed = (pageId, postsToShow=FEED_PUBLISHED) => {
   return graphRequest(url, params);
 }
 
-function graphRequest(path, params) {
+function graphRequest(path, params, token=undefined, version=undefined, method='GET') {
   return new Promise((resolve, reject) => {
-    return new FBSDKGraphRequest((error, result) => {
-      if (error) {
-        console.log(error);
-        reject('error making request. ' + error);
-      } else {
-        resolve(result);
-      }
-    }, path, params).start();
+    return new FBSDKGraphRequest(
+      (error, result) => {
+        if (error) {
+          console.log(error);
+          reject('error making request. ' + error);
+        } else {
+          resolve(result);
+        }
+      }, path, params, token, version, method).start();
   });
 }

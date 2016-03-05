@@ -20,6 +20,17 @@ import {
   POSTINSIGHTS_FETCH,
   POSTINSIGHTS_FETCH_SUCCESS,
   POSTINSIGHTS_FETCH_FAILURE,
+  PUBLISH_PERMISSIONS_FETCH,
+  PUBLISH_PERMISSIONS_SUCCESS,
+  PUBLISH_PERMISSIONS_FAILURE,
+  PAGE_TOKEN_FETCH,
+  PAGE_TOKEN_FETCH_SUCCESS,
+  PAGE_TOKEN_FETCH_FAILURE,
+  POST_SEND,
+  POST_SEND_SUCCESS,
+  POST_SEND_FAILURE,
+  TOKEN_ERRORS_CLEAR,
+  POST_ERRORS_CLEAR,
 } from './actions'
 
 import * as facebookAPI from './facebookAPI'
@@ -94,15 +105,30 @@ const accounts = (state = initialAccountsState, action) => {
 }
 
 const initialPagesState = {
-  currentPageId:     undefined,
-  pageInfo:          {},
-  pageContent:       {},
-  requestingInfo:    false,
-  successInfo:       false,
-  requestingContent: false,
-  successContent:    false,
-  error:             null,
-  shown:             facebookAPI.FEED_PUBLISHED,
+  currentPageId:         undefined,
+  // all about showing the current page and its header
+  pageInfo:              {},
+  pageContent:           {},
+  requestingInfo:        false,
+  successInfo:           false,
+  requestingContent:     false,
+  successContent:        false,
+  shown:                 facebookAPI.FEED_PUBLISHED,
+  error:                 null,
+  // getting Page publish token related
+  publishPermissions:    [],
+  pageToken:             undefined,
+  requestingPermissions: false,
+  successPermissions:    false,
+  errorPermissions:      null,
+  requestingToken:       false,
+  successToken:          false,
+  errorToken:            null,
+  // sending post related
+  sendingPost:           false,
+  successPost:           false,
+  lastSentPostId:        null,
+  errorPost:             null,
 }
 
 function apppendInsights(contentList, postId, insights) {
@@ -188,6 +214,74 @@ const pages = (state = initialPagesState, action) => {
           state.pageContent,
           action.postid,
           { requesting: false, success: false, error: action.error })
+      })
+    case PUBLISH_PERMISSIONS_FETCH:
+      return Object.assign({}, state, {
+        requestingPermissions: true,
+        successPermissions:    false,
+        errorPermissions:      null,
+      })
+    case PUBLISH_PERMISSIONS_SUCCESS:
+      return Object.assign({}, state, {
+        requestingPermissions: false,
+        successPermissions:    true,
+        errorPermissions:      null,
+        publishPermissions:    action.result.grantedPermissions,
+      })
+    case PUBLISH_PERMISSIONS_FAILURE:
+      return Object.assign({}, state, {
+        requestingPermissions: false,
+        successPermissions:    false,
+        errorPermissions:      action.error,
+        publishPermissions:    [],
+      })
+    case PAGE_TOKEN_FETCH:
+      return Object.assign({}, state, {
+        requestingToken:   true,
+        successToken:      false,
+        errorToken:        null,
+      })
+    case PAGE_TOKEN_FETCH_SUCCESS:
+      return Object.assign({}, state, {
+        requestingToken:   false,
+        successToken:      true,
+        errorToken:        null,
+        pageToken:         action.result.access_token,
+      })
+    case PAGE_TOKEN_FETCH_FAILURE:
+      return Object.assign({}, state, {
+        requestingToken:   false,
+        successToken:      false,
+        errorToken:        action.error,
+        pageToken:         undefined,
+      })
+    case POST_SEND:
+      return Object.assign({}, state, {
+        sendingPost:       true,
+        successPost:       false,
+        errorPost:         null,
+        lastSentPostId:    null,
+      })
+    case POST_SEND_SUCCESS:
+      return Object.assign({}, state, {
+        sendingPost:       false,
+        successPost:       true,
+        errorPost:         null,
+        lastSentPostId:    action.result,
+      })
+    case POST_SEND_FAILURE:
+      return Object.assign({}, state, {
+        sendingPost:       false,
+        successPost:       false,
+        errorPost:         action.error,
+        lastSentPostId:    null,
+      })
+    case TOKEN_ERRORS_CLEAR:
+    case POST_ERRORS_CLEAR:
+      return Object.assign({}, state, {
+        errorPost:        null,
+        errorToken:       null,
+        errorPermissions: null,
       })
     default:
       return state;

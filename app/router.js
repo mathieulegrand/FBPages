@@ -21,8 +21,9 @@ let NavBarRouteMapper = {
           </TouchableOpacity>
         );
       case 'Post':
+        console.log("NAVI",navigator,navState)
         return (
-          <TouchableOpacity onPress={() => { typeof navigator.props.gotoDefaultTab === 'function' ? navigator.props.gotoDefaultTab() : null } }
+          <TouchableOpacity onPress={ navigator.props.gotoDefaultTab }
                   style={styles.buttonContainer}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
@@ -31,6 +32,17 @@ let NavBarRouteMapper = {
     return null;
   },
   RightButton(route, navigator, index, navState) {
+    switch (route.id) {
+      case 'Post':
+        return (
+          <TouchableOpacity onPress={() => { typeof navigator.props.gotoDefaultTab === 'function' ? navigator.props.gotoDefaultTab() : null } }
+                  style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>Post</Text>
+          </TouchableOpacity>
+        );
+      default:
+        return null;
+    }
     return null;
   },
   Title(route, navigator, index, navState) {
