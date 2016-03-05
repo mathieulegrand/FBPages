@@ -252,8 +252,12 @@ class HomeScene extends React.Component {
     }
 
     if (pages.currentPageId && pages.successInfo) {
+      // when wrapping a ListView in a standard View, bound the height of the View
+      // here the height should be window.height - (64+48) -- for the navbar and the
+      // tabbar; but to allow transparency on the tabbar, I let the ListView go
+      // below the tabbar…
       return this.renderWithNavBar(
-        <View>
+        <View style={{ height: window.height - 64}}>
           { errorBar }
           <GiftedListView
             rowView={this._renderRowView.bind(this)}
