@@ -10,9 +10,9 @@ import * as facebookAPI    from '../facebookAPI'
 import ErrorBar            from '../components/errorBar'
 import NavBar              from '../components/navBar'
 
-var buttonsGap    = 50;
+var toolbarGap    = 40;
 var navBarHeight  = 64;
-var fixedOffset   = navBarHeight + buttonsGap;
+var fixedOffset   = navBarHeight + toolbarGap;
 var tabBarHeight  = 48;
 
 class PostScene extends React.Component {
@@ -68,6 +68,20 @@ class PostScene extends React.Component {
     }
   }
 
+  renderToolbar() {
+    return (
+      <React.View style={ styles.toolbar }>
+        <React.Text style={ styles.toolbarText }>
+          Publish
+        </React.Text>
+        <React.Switch
+          value={this.state.publish}
+          onValueChange={(value) => this.setState({publish: value})}
+          style={ styles.toolbarSwitch }/>
+      </React.View>
+    )
+  }
+
   render() {
     const { dispatch, pages } = this.props
     let errorView   = null;
@@ -97,9 +111,7 @@ class PostScene extends React.Component {
               autoFocus={true}
               placeholder="Write something…"
               style={[styles.input, {height:this.state.visibleHeight}]} />
-            <React.View>
-              <React.Text>Here are more buttons</React.Text>
-            </React.View>
+            { this.renderToolbar() }
           </React.View>
       </NavBar>
     );
@@ -116,6 +128,28 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(PostScene);
 
 const styles = React.StyleSheet.create({
+  toolbar: {
+    height: toolbarGap,
+    flexDirection: 'row',
+    backgroundColor: '#f8f8f8',
+    borderTopWidth: 0.5,
+    borderColor: '#b2b2b2',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  toolbarText: {
+    fontFamily: 'System',
+    fontSize: 15,
+    fontWeight: '500',
+    color: 'black',
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  toolbarSwitch: {
+    marginBottom: 2,
+  },
   input: {
     marginTop: 0,
     padding: 10,
