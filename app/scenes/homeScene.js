@@ -16,6 +16,7 @@ import * as actionCreators from '../actions'
 import TimeAgo   from '../components/timeago'
 import ErrorBar  from '../components/errorBar'
 import Loading   from '../components/loading'
+import NavBar    from '../components/navBar'
 
 let separatorCounter = 0;
 
@@ -214,29 +215,17 @@ class HomeScene extends React.Component {
     })
   }
 
-  getTitle() {
-    return 'Page';
-  }
-
   renderWithNavBar(component) {
-    return (
-      <View style={{ flex: 1 }}>
-        <View style={styles.navBarContainer}>
-          <React.TouchableOpacity
-            onPress={ this.props.openDrawer }
-            style={styles.buttonContainer}>
-            <Icon name="navicon-round" size={24} color="#5A7EB0" />
-          </React.TouchableOpacity>
-          <View style={styles.navBarTitle}>
-            <React.Text style={styles.navBarTitleText}>
-              Page
-            </React.Text>
-          </View>
-          <View style={styles.buttonContainer}/>
-        </View>
-        {component}
-      </View>
-    );
+    return  (
+      <NavBar
+        title="Page"
+        leftButtonView={ <Icon name="navicon-round" size={24} color="#5A7EB0" /> }
+        onLeftPress={ this.props.openDrawer }
+        leftButtonStyle={ { alignItems: 'center' } }
+        buttonContainerStyle={{ width: 50, justifyContent: 'center' }}>
+          {component}
+      </NavBar>
+    )
   }
 
   render() {
@@ -273,19 +262,19 @@ class HomeScene extends React.Component {
             withSections={true}
             headerView={this._renderHeader.bind(this)}
             sectionHeaderView={this._renderSectionHeaderView.bind(this)}
-            renderSeparator={this._renderSeparatorView.bind(this)}
-          />
-        </View>
-      );
-    } else {
-      return this.renderWithNavBar(
-        <View style={ styles.textBox }>
-          <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
-            Error while loading page {pages.error}
-          </Text>
+            renderSeparator={this._renderSeparatorView.bind(this)} />
         </View>
       )
     }
+
+    // else
+    return this.renderWithNavBar(
+      <View style={ styles.textBox }>
+        <Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
+          Error while loading page {pages.error}
+        </Text>
+      </View>
+    )
   }
 }
 
@@ -439,32 +428,5 @@ const styles = React.StyleSheet.create({
     fontFamily: 'System',
     fontSize: 12,
     fontStyle: 'italic'
-  },
-  navBarContainer: {
-    paddingTop: 30,
-    paddingBottom: 8,
-    borderBottomWidth: 0.5,
-    borderColor: '#b2b2b2',
-    height: 64,
-    backgroundColor: '#f8f8f8',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'stretch',
-  },
-  navBarTitle: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent:'center',
-  },
-  navBarTitleText:{
-    fontFamily: 'System',
-    fontWeight: '500',
-    fontSize:   18,
-  },
-  buttonContainer: {
-    width: 50,
-    overflow:'hidden',
-    alignItems: 'center',
-    justifyContent:'center',
   },
 });

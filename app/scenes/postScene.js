@@ -8,6 +8,7 @@ import * as actionCreators from '../actions'
 
 import * as facebookAPI    from '../facebookAPI'
 import ErrorBar            from '../components/errorBar'
+import NavBar              from '../components/navBar'
 
 var buttonsGap    = 50;
 var navBarHeight  = 64;
@@ -44,10 +45,6 @@ class PostScene extends React.Component {
     this.setState({visibleHeight: Dimensions.get('window').height - fixedOffset - tabBarHeight})
   }
 
-  getTitle() {
-    return 'New Post';
-  }
-
   sendPost() {
     const { dispatch, pages } = this.props
 
@@ -71,31 +68,6 @@ class PostScene extends React.Component {
     }
   }
 
-  renderWithNavBar(component) {
-    return (
-      <React.View style={{ flex: 1 }}>
-        <React.View style={styles.navBarContainer}>
-          <React.TouchableOpacity
-            onPress={ this.props.gotoDefaultTab }
-            style={ [ styles.buttonContainer, { alignItems: 'flex-start' } ] }>
-            <React.Text style={styles.buttonText}>Cancel</React.Text>
-          </React.TouchableOpacity>
-          <React.View style={styles.navBarTitle}>
-            <React.Text style={styles.navBarTitleText}>
-              Page
-            </React.Text>
-          </React.View>
-          <React.TouchableOpacity
-            onPress={ this.sendPost.bind(this) }
-            style={ [ styles.buttonContainer, { alignItems: 'flex-end' } ] }>
-            <React.Text style={styles.buttonText}>Post</React.Text>
-          </React.TouchableOpacity>
-        </React.View>
-        { component }
-      </React.View>
-    );
-  }
-
   render() {
     const { dispatch, pages } = this.props
     let errorView   = null;
@@ -108,20 +80,28 @@ class PostScene extends React.Component {
       errorView   = <ErrorBar textMessage="Error while sending the post" onPress={onPress}/>
     }
 
-    return this.renderWithNavBar(
-      <React.View style={{height: this.state.visibleHeight}}>
-        { errorView }
-        <React.TextInput multiline={true}
-          onChangeText={(text) => {
-            this.state.post.data = text;
-          }}
-          defaultValue={this.state.post.data}
-          autoFocus={true}
-          placeholder="Write something…"
-          style={[styles.input, {height:this.state.visibleHeight}]}
-        />
-        <React.View><React.Text>Here are more buttons</React.Text></React.View>
-      </React.View>
+    return (
+      <NavBar
+        title="New Post"
+        onLeftPress={ this.props.gotoDefaultTab }
+        leftButtonText="Cancel"
+        onRightPress={ this.sendPost.bind(this) }
+        rightButtonText="Post">
+          <React.View style={{height: this.state.visibleHeight}}>
+            { errorView }
+            <React.TextInput multiline={true}
+              onChangeText={(text) => {
+                this.state.post.data = text;
+              }}
+              defaultValue={this.state.post.data}
+              autoFocus={true}
+              placeholder="Write something…"
+              style={[styles.input, {height:this.state.visibleHeight}]} />
+            <React.View>
+              <React.Text>Here are more buttons</React.Text>
+            </React.View>
+          </React.View>
+      </NavBar>
     );
   }
 }
@@ -142,39 +122,5 @@ const styles = React.StyleSheet.create({
     backgroundColor: '#FFF',
     fontFamily: 'System',
     fontSize: 18
-  },
-  navBarContainer: {
-    paddingTop: 30,
-    paddingBottom: 8,
-    borderBottomWidth: 0.5,
-    borderColor: '#b2b2b2',
-    height: 64,
-    backgroundColor: '#f8f8f8',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'stretch',
-  },
-  navBarTitle: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent:'center',
-  },
-  navBarTitleText:{
-    fontFamily: 'System',
-    fontWeight: '500',
-    fontSize:   18,
-  },
-  buttonContainer: {
-    flex: 1,
-    overflow:'hidden',
-    justifyContent:'center',
-  },
-  buttonText: {
-    marginLeft: 10,
-    marginRight: 10,
-    fontFamily: 'System',
-    fontWeight: '500',
-    fontSize:   16,
-    color: '#5A7EB0',
   },
 });
