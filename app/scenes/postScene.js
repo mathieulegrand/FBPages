@@ -36,7 +36,7 @@ class PostScene extends React.Component {
     // check if we do have 'publish_pages' in our permissions, or request it
     // then request the Page token (either when we get the permission, or directly if we do have it)
     if (!login.permissions || login.permissions.indexOf('publish_pages') === -1) {
-      dispatch(actionCreators.requestPublishPermissions(['publish_pages']))
+      dispatch(actionCreators.requestPublishPermissions(['manage_pages', 'publish_pages']))
         .then( (result) => {
           dispatch(actionCreators.getPageToken(pages.currentPageId))
             .then( Function.prototype )
