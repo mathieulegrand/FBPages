@@ -147,7 +147,7 @@ const initialPagesState = {
   shown:                 FEED_PUBLISHED, // from facebookAPI
   error:                 null,
   // Page token related
-  pageToken:             undefined, // +FIXME: should the token be Page specific?
+  pageToken:             {},    // +FIXME: should the token be Page specific?
   requestingToken:       false,
   successToken:          false,
   errorToken:            null,
@@ -264,14 +264,14 @@ const pages = (state = initialPagesState, action) => {
         requestingToken:   false,
         successToken:      true,
         errorToken:        null,
-        pageToken:         action.result.access_token,
+        pageToken:         { [action.pageid]: action.result.access_token },
       })
     case PAGE_TOKEN_FETCH_FAILURE:
       return Object.assign({}, state, {
         requestingToken:   false,
         successToken:      false,
         errorToken:        action.error,
-        pageToken:         undefined,
+        pageToken:         { [action.pageid]: undefined },
       })
     case POST_SEND:
       return Object.assign({}, state, {

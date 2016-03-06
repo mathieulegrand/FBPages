@@ -62,8 +62,8 @@ class PostScene extends React.Component {
   sendPost() {
     const { dispatch, pages } = this.props
 
-    let postAction = () => {
-       dispatch(actionCreators.sendPost(pages.currentPageId, pages.pageToken, {
+    let postAction = (access_token) => {
+      dispatch(actionCreators.sendPost(pages.currentPageId, access_token, {
         message:   this.state.post.data,
         published: this.state.publish,
       })).then( () => {
@@ -73,11 +73,13 @@ class PostScene extends React.Component {
     }
 
     // if we do not have a token at this stage, we'll try requesting it again
-    if (pages.pageToken) {
-      postAction()
+    if (pages.pageToken[pages.currentPageId]) {
+      postAction(pages.pageToken[pages.currentPageId])
     } else {
-      dispatch(actionCreators.getPageToken(pages.currentPageId)).then( () => {
-        postAction()
+      dispatch(actionCreators.getPageToken(pages.currentPageId)).then( (result) => {
+        // here we need to use the new access token to post,
+        // as the pages props has not been updated within the `then`
+        postAction(result.access_token)
       }).then( Function.prototype ).catch( Function.prototype )
     }
   }
@@ -101,11 +103,13 @@ class PostScene extends React.Component {
     let errorView   = null;
 
     if (pages.errorToken) {
-      let onPress = () => { dispatch(actionCreators.clearTokenErrors()) }
-      errorView   = <ErrorBar textMessage="Could not get publish permissions" onPress={onPress}/>
+      let clearMessage = () => { dispatch(actionCreators.clearTokenErrors()) }
+      errorView   = <ErrorBar textMessage="Could not get publish permissions"
+                              clearCallback={clearMessage} onPress={clearMessage}/>
     } else if (pages.errorPost) {
-      let onPress = () => { dispatch(actionCreators.clearPostErrors()) }
-      errorView   = <ErrorBar textMessage="Error while sending the post" onPress={onPress}/>
+      let clearMessage = () => { dispatch(actionCreators.clearPostErrors()) }
+      errorView   = <ErrorBar textMessage="Error while sending the post"
+                              clearCallback={clearMessage} onPress={clearMessage}/>
     }
 
     return (

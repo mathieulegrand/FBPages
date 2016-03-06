@@ -89,8 +89,8 @@ const publishPermissionsFetch    = ()       => ({type: PUBLISH_PERMISSIONS_FETCH
 const publishPermissionsSuccess  = (result) => ({type: PUBLISH_PERMISSIONS_SUCCESS, result})
 const publishPermissionsFailure  = (error)  => ({type: PUBLISH_PERMISSIONS_FAILURE, error})
 const pageTokenFetch             = ()       => ({type: PAGE_TOKEN_FETCH})
-const pageTokenFetchSuccess      = (result) => ({type: PAGE_TOKEN_FETCH_SUCCESS, result})
-const pageTokenFetchFailure      = (error)  => ({type: PAGE_TOKEN_FETCH_FAILURE, error})
+const pageTokenFetchSuccess      = (pageid, result) => ({type: PAGE_TOKEN_FETCH_SUCCESS, pageid, result})
+const pageTokenFetchFailure      = (pageid, error)  => ({type: PAGE_TOKEN_FETCH_FAILURE, pageid, error})
 
 // -- action creators: Posting
 const postSend            = ()       => ({type: POST_SEND})
@@ -245,11 +245,11 @@ export function getPageToken(pageId) {
     dispatch(pageTokenFetch())
     return new Promise( (resolve, reject) => {
       facebookAPI.pageToken(pageId).then( (result) => {
-        dispatch(pageTokenFetchSuccess(result))
+        dispatch(pageTokenFetchSuccess(pageId, result))
         resolve(result)
       }).catch( (error) => {
         dispatch(pageTokenFetchFailure(error))
-        reject(error)
+        reject(pageId, error)
       })
     })
   }

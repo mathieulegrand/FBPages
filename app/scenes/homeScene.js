@@ -252,8 +252,9 @@ class HomeScene extends React.Component {
 
     let errorBar = null;
     if (pages.successPost) {
+      const clearMessage = () => { dispatch(actionCreators.clearPostSent()) }
       errorBar = <ErrorBar green={true} textMessage={"New message sent successfully"}
-                           onPress={ () => { dispatch(actionCreators.clearPostSent()) } } />;
+                           clearCallback={ clearMessage } onPress={ clearMessage }/>;
     }
 
     if (pages.currentPageId && pages.successInfo) {
