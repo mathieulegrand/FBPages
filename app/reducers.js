@@ -37,6 +37,7 @@ import {
   TOKEN_ERRORS_CLEAR,
   POST_ERRORS_CLEAR,
   POST_SENT_CLEAR,
+  FORCE_RELOAD_CLEAR,
 } from './actions'
 
 import {
@@ -145,12 +146,8 @@ const initialPagesState = {
   successContent:        false,
   shown:                 FEED_PUBLISHED, // from facebookAPI
   error:                 null,
-  // getting Page publish token related
-  publishPermissions:    [],
+  // Page token related
   pageToken:             undefined, // +FIXME: should the token be Page specific?
-  requestingPermissions: false,
-  successPermissions:    false,
-  errorPermissions:      null,
   requestingToken:       false,
   successToken:          false,
   errorToken:            null,
@@ -159,6 +156,7 @@ const initialPagesState = {
   successPost:           false,
   lastSentPostId:        null,
   errorPost:             null,
+  forceReload:           false,
 }
 
 function apppendInsights(contentList, postId, insights) {
@@ -184,12 +182,17 @@ const pages = (state = initialPagesState, action) => {
         requestingContent: false,
         successContent:    false,
         error:             null,
+        successPost:       false,
+        errorPost:         null,
+        errorToken:        null,
+        forceReload:       true,
       })
     case PAGEINFO_FETCH:
       return Object.assign({}, state, {
         requestingInfo:    true,
         successInfo:       false,
         error:             null,
+        forceReload:       false,
       })
     case PAGEINFO_FETCH_SUCCESS:
       return Object.assign({}, state, {
@@ -197,18 +200,21 @@ const pages = (state = initialPagesState, action) => {
         successInfo:       true,
         error:             null,
         pageInfo:          action.pageinfo,
+        forceReload:       false,
       })
     case PAGEINFO_FETCH_FAILURE:
       return Object.assign({}, state, {
         requestingInfo:    false,
         successInfo:       false,
         error:             action.error,
+        forceReload:       false,
       })
     case PAGECONTENT_FETCH:
       return Object.assign({}, state, {
         requestingContent:    true,
         successContent:       false,
         error:                null,
+        forceReload:          false,
       })
     case PAGECONTENT_FETCH_SUCCESS:
       return Object.assign({}, state, {
@@ -217,12 +223,14 @@ const pages = (state = initialPagesState, action) => {
         error:                null,
         pageContent:          action.pagecontent.data,
         shown:                action.shown,
+        forceReload:          false,
       })
     case PAGECONTENT_FETCH_FAILURE:
       return Object.assign({}, state, {
         requestingContent:    false,
         successContent:       false,
         error:                action.error,
+        forceReload:          false,
       })
     case POSTINSIGHTS_FETCH:
       return Object.assign({}, state, {
@@ -244,26 +252,6 @@ const pages = (state = initialPagesState, action) => {
           state.pageContent,
           action.postid,
           { requesting: false, success: false, error: action.error })
-      })
-    case PUBLISH_PERMISSIONS_FETCH:
-      return Object.assign({}, state, {
-        requestingPermissions: true,
-        successPermissions:    false,
-        errorPermissions:      null,
-      })
-    case PUBLISH_PERMISSIONS_SUCCESS:
-      return Object.assign({}, state, {
-        requestingPermissions: false,
-        successPermissions:    true,
-        errorPermissions:      null,
-        publishPermissions:    action.result.grantedPermissions,
-      })
-    case PUBLISH_PERMISSIONS_FAILURE:
-      return Object.assign({}, state, {
-        requestingPermissions: false,
-        successPermissions:    false,
-        errorPermissions:      action.error,
-        publishPermissions:    [],
       })
     case PAGE_TOKEN_FETCH:
       return Object.assign({}, state, {
@@ -291,6 +279,7 @@ const pages = (state = initialPagesState, action) => {
         successPost:       false,
         errorPost:         null,
         lastSentPostId:    null,
+        forceReload:       false,
       })
     case POST_SEND_SUCCESS:
       return Object.assign({}, state, {
@@ -298,6 +287,7 @@ const pages = (state = initialPagesState, action) => {
         successPost:       true,
         errorPost:         null,
         lastSentPostId:    action.result,
+        forceReload:       true,
       })
     case POST_SEND_FAILURE:
       return Object.assign({}, state, {
@@ -305,17 +295,23 @@ const pages = (state = initialPagesState, action) => {
         successPost:       false,
         errorPost:         action.error,
         lastSentPostId:    null,
+        forceReload:       false,
       })
     case TOKEN_ERRORS_CLEAR:
     case POST_ERRORS_CLEAR:
       return Object.assign({}, state, {
         errorPost:        null,
         errorToken:       null,
-        errorPermissions: null,
+        forceReload:      false,
       })
     case POST_SENT_CLEAR:
       return Object.assign({}, state, {
         successPost:      false,
+        forceReload:      false,
+      })
+    case FORCE_RELOAD_CLEAR:
+      return Object.assign({}, state, {
+        forceReload:      false,
       })
     default:
       return state;

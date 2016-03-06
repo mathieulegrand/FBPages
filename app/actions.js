@@ -36,6 +36,7 @@ export const POST_SEND_FAILURE           = 'POST_SEND_FAILURE'
 export const TOKEN_ERRORS_CLEAR          = 'TOKEN_ERRORS_CLEAR'
 export const POST_ERRORS_CLEAR           = 'POST_ERRORS_CLEAR'
 export const POST_SENT_CLEAR             = 'POST_SENT_CLEAR'
+export const FORCE_RELOAD_CLEAR          = 'FORCE_RELOAD_CLEAR'
 
 // -- action creators: Login
 export const loginRequest    = ()        => ({type: LOGIN_REQUEST})
@@ -48,7 +49,8 @@ export const appTokenCheck   = ()             => ({type: APP_TOKEN_CHECK})
 export const appTokenSuccess = (tokenDetails) => ({type: APP_TOKEN_SUCCESS, tokenDetails})
 export const appTokenFailure = (error)        => ({type: APP_TOKEN_FAILURE, error})
 
-export const pageSetCurrent = (pageid)   => ({type: PAGE_SET_CURRENT, pageid})
+export const pageSetCurrent   = (pageid)=> ({type: PAGE_SET_CURRENT, pageid})
+export const forceReloadClear = ()      => ({type: FORCE_RELOAD_CLEAR})
 
 // -- action creators: Page
 const accountsFetch        = ()         => ({type: ACCOUNTS_FETCH})

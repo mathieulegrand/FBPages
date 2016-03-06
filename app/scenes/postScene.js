@@ -37,7 +37,7 @@ class PostScene extends React.Component {
     // then request the Page token (either when we get the permission, or directly if we do have it)
     if (!login.permissions || login.permissions.indexOf('publish_pages') === -1) {
       dispatch(actionCreators.requestPublishPermissions(['publish_pages']))
-        .then( () => {
+        .then( (result) => {
           dispatch(actionCreators.getPageToken(pages.currentPageId))
             .then( Function.prototype )
             .catch( Function.prototype )
@@ -100,7 +100,7 @@ class PostScene extends React.Component {
     const { dispatch, pages } = this.props
     let errorView   = null;
 
-    if (pages.errorToken || pages.errorPermissions) {
+    if (pages.errorToken) {
       let onPress = () => { dispatch(actionCreators.clearTokenErrors()) }
       errorView   = <ErrorBar textMessage="Could not get publish permissions" onPress={onPress}/>
     } else if (pages.errorPost) {

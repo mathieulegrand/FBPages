@@ -24,7 +24,10 @@ class HomeScene extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.pages.currentPageId !== this.props.pages.currentPageId) {
-      this.reloadPageInfoIfNeeded(nextProps.pages);
+      this.reloadPageInfoIfNeeded(nextProps.pages)
+    } else if (nextProps.pages.forceReload) {
+      this.props.dispatch(actionCreators.forceReloadClear())
+      this.reloadPageInfoIfNeeded(nextProps.pages)
     }
   }
 
@@ -190,6 +193,18 @@ class HomeScene extends React.Component {
     );
   }
 
+  renderActionButton(text, onPress) {
+    return (
+      <React.TouchableOpacity onPress={onPress}>
+        <React.Text style={{
+          fontFamily: 'System', fontSize: 18, fontWeight: '600', padding: 5, margin: 30,
+          textAlign: 'center', color: "#2b3c54", borderColor: "#5A7EB0", borderWidth: 0.5}}>
+          { text }
+        </React.Text>
+      </React.TouchableOpacity>
+    )
+  }
+
   render() {
     const { dispatch, login, pages } = this.props
 
@@ -207,16 +222,10 @@ class HomeScene extends React.Component {
         return (
           <NavBar {...navBarProps}>
             <React.View style={ styles.textBox }>
-              <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center', margin: 10 }}>
+              <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center', marginTop: 30 }}>
                 Permission to list of managed Pages has not been granted.
               </React.Text>
-              <React.TouchableOpacity onPress={() => { dispatch(actionCreators.logout()) }}>
-                <React.Text style={{
-                  fontFamily: 'System', fontSize: 18, fontWeight: '600',
-                  textAlign: 'center', margin: 30, color: "#5A7EB0" }}>
-                  Logout?
-                </React.Text>
-              </React.TouchableOpacity>
+              { this.renderActionButton('Logout?', () => { dispatch(actionCreators.logout()) }) }
             </React.View>
           </NavBar>
         )
@@ -227,6 +236,7 @@ class HomeScene extends React.Component {
             <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
               No page to manage.
             </React.Text>
+            { this.renderActionButton('Logout?', () => { dispatch(actionCreators.logout()) }) }
           </React.View>
         </NavBar>
       )
@@ -264,9 +274,10 @@ class HomeScene extends React.Component {
     return (
       <NavBar {...navBarProps}>
         <React.View style={ styles.textBox }>
-          <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
+          <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center', marginTop: 30}}>
             Error while loading page {pages.error}
           </React.Text>
+          { this.renderActionButton('Refresh?', () => { this.reloadPageInfoIfNeeded(this.props.pages) }) }
         </React.View>
       </NavBar>
     )
