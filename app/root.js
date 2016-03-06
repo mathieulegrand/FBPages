@@ -56,9 +56,10 @@ class Root extends React.Component {
   componentWillMount() {
     const { dispatch, login } = this.props
 
-    // try to do a profile info request, to test if we are logged in
-    // if we are, the state will be set to login.success by the action
-    dispatch(actionCreators.getInfo());
+    // check the token, and do nothing with the Promise (as exceptions will be handled
+    // via the redux state in the render function)
+    // note: not passing an empty function (Function.prototype), yield an error
+    dispatch(actionCreators.checkAppToken()).then( Function.prototype ).catch( Function.prototype );
   }
 
   componentWillReceiveProps(props) {

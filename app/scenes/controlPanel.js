@@ -12,24 +12,44 @@ import * as facebookAPI    from '../facebookAPI'
 import Login               from '../components/login'
 
 // the default menu of the Drawer
-const controlMenu = (state) => ({
-  'Help & Settings': [ {
-    name:   (state.pages.shown === facebookAPI.FEED_PUBLISHED? "Show unpublished" : "Show published"),
-    action: (dispatch) => {
-      dispatch(actionCreators.pageContentWithInsights(
-        state.pages.currentPageId,
-        state.pages.shown === facebookAPI.FEED_PUBLISHED? facebookAPI.FEED_ALL : facebookAPI.FEED_PUBLISHED))
-    },
-    icon:   () => {
-      return <Icon name={ state.pages.shown === facebookAPI.FEED_PUBLISHED? "toggle" : "toggle-filled" }
-                   size={18} color="#888888" />
-    },
-  }, {
-    name:   "Logout",
-    action: (dispatch) => { dispatch(actionCreators.logout()); },
-    icon:   <Icon name="power" size={18} color="#888888" />
-  }]
-});
+function controlMenu(state) {
+  const requestNewContent = (dispatch, pageId, toShow) => {
+    dispatch(actionCreators.pageContentWithInsights(pageId, toShow))
+      .then(  Function.prototype )
+      .catch( Function.prototype )
+  }
+
+  let showPublished = (state.pages.shown === facebookAPI.FEED_PUBLISHED)
+
+  return {
+    'Help & Settings': [ {
+      name:   "Show unpublished",
+      action: (dispatch) => {
+        if (!state.login.permissions || state.login.permissions.indexOf('manage_pages') === -1) {
+          // make sure we have the correct permissions to show the 'unpublished' posts
+          dispatch(actionCreators.requestPublishPermissions(['manage_pages']))
+            .then( () => {
+              requestNewContent(dispatch, state.pages.currentPageId,
+                                showPublished? facebookAPI.FEED_ALL : facebookAPI.FEED_PUBLISHED)
+            })
+            .catch( Function.prototype )
+        } else {
+          // we have the permissions, request the content
+          requestNewContent(dispatch, state.pages.currentPageId,
+                            showPublished? facebookAPI.FEED_ALL : facebookAPI.FEED_PUBLISHED)
+        }
+      },
+      icon:   () => {
+        return <Icon name={ state.pages.shown === facebookAPI.FEED_PUBLISHED? "ios-circle-outline" : "ios-checkmark" }
+                     size={18} color="#888888" />
+      },
+    }, {
+      name:   "Logout",
+      action: (dispatch) => { dispatch(actionCreators.logout()) },
+      icon:   <Icon name="power" size={18} color="#888888" />
+    }]
+  }
+}
 
 // and the additional sections names
 const PAGES_SECTION = 'Pages'

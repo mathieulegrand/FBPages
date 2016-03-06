@@ -31,7 +31,8 @@ class Login extends React.Component {
               if (result.isCancelled) {
                 dispatch(actionCreators.loginFailure());
               } else {
-                dispatch(actionCreators.loginSuccess());
+                console.log("login", result)
+                dispatch(actionCreators.loginSuccess(result));
               }
             }
           }}

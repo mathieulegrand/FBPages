@@ -69,6 +69,7 @@ class HomeScene extends React.Component {
 
   renderRowView(entry) {
     let contentView = [];
+    if (!entry) { return null }
     switch (entry.type) {
       case "photo":
         let uniquify = 0;
@@ -190,7 +191,7 @@ class HomeScene extends React.Component {
   }
 
   render() {
-    const { dispatch, pages } = this.props
+    const { dispatch, login, pages } = this.props
 
     let navBarProps = {
       title:                "Page",
@@ -201,11 +202,30 @@ class HomeScene extends React.Component {
     }
 
     if (!pages.currentPageId) {
+      // Here maybe we do not have the pages_show_list permission?
+      if (!login.permission || login.permission.indexOf('pages_show_list') === -1) {
+        return (
+          <NavBar {...navBarProps}>
+            <React.View style={ styles.textBox }>
+              <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center', margin: 10 }}>
+                Permission to list of managed Pages has not been granted.
+              </React.Text>
+              <React.TouchableOpacity onPress={() => { dispatch(actionCreators.logout()) }}>
+                <React.Text style={{
+                  fontFamily: 'System', fontSize: 18, fontWeight: '600',
+                  textAlign: 'center', margin: 30, color: "#5A7EB0" }}>
+                  Logout?
+                </React.Text>
+              </React.TouchableOpacity>
+            </React.View>
+          </NavBar>
+        )
+      }
       return (
         <NavBar {...navBarProps}>
           <React.View style={ styles.textBox }>
             <React.Text style={{ fontFamily: 'System', fontSize: 18, textAlign: 'center'}}>
-              No page to manage
+              No page to manage.
             </React.Text>
           </React.View>
         </NavBar>
@@ -269,6 +289,7 @@ function buildFeedDataSource(content) {
 
 HomeScene.propTypes = {
   dispatch: React.PropTypes.func.isRequired,
+  login:    React.PropTypes.object,
   accounts: React.PropTypes.object,
   pages:    React.PropTypes.object,
 }
@@ -280,6 +301,7 @@ const mapStateToProps = (state) => {
   });
 
   return {
+    login:      state.login,
     accounts:   state.accounts,
     pages:      state.pages,
     dataSource: dataSource.cloneWithRowsAndSections(buildFeedDataSource(state.pages.pageContent))

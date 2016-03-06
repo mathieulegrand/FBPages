@@ -12,7 +12,7 @@ export default class WelcomeScene extends React.Component {
           Welcome to{'\n'}
           Pages Manager
         </React.Text>
-        <Login style={styles.login} readPermissions={ [ 'read_insights' ] }/>
+        <Login style={styles.login} readPermissions={ [ 'read_insights', 'pages_show_list' ] }/>
         <React.Text style={styles.instructions}>
           Connect to post updates to your Facebook Pages and
           see the number of people that have viewed your posts.

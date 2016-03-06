@@ -27,13 +27,27 @@ class PostScene extends React.Component {
   }
 
   componentWillMount () {
+    const { dispatch, login, pages } = this.props
+
     // this is used to resize the view when the keyboard appears / disappears
     React.DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     React.DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
 
-    // get Publish token when the user first switch to the view
-    // ignore the error, as `render` will show an error message for the user
-    this.props.dispatch(actionCreators.getPageToken(this.props.pages.currentPageId)).catch((e) => {})
+    // check if we do have 'publish_pages' in our permissions, or request it
+    // then request the Page token (either when we get the permission, or directly if we do have it)
+    if (!login.permissions || login.permissions.indexOf('publish_pages') === -1) {
+      dispatch(actionCreators.requestPublishPermissions(['publish_pages']))
+        .then( () => {
+          dispatch(actionCreators.getPageToken(pages.currentPageId))
+            .then( Function.prototype )
+            .catch( Function.prototype )
+        })
+        .catch( Function.prototype )
+    } else {
+      dispatch(actionCreators.getPageToken(currentPageId))
+        .then( Function.prototype )
+        .catch( Function.prototype )
+    }
   }
 
   keyboardWillShow (e) {
@@ -55,7 +69,7 @@ class PostScene extends React.Component {
       })).then( () => {
         this.setState({ post: { data: "" }});
         this.props.gotoDefaultTab();
-      }).catch((e) => { console.log(e) })
+      }).catch( Function.prototype )
     }
 
     // if we do not have a token at this stage, we'll try requesting it again
@@ -64,7 +78,7 @@ class PostScene extends React.Component {
     } else {
       dispatch(actionCreators.getPageToken(pages.currentPageId)).then( () => {
         postAction()
-      }).catch((e) => {})
+      }).then( Function.prototype ).catch( Function.prototype )
     }
   }
 
@@ -120,6 +134,7 @@ class PostScene extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
+    login:    state.login,
     accounts: state.accounts,
     pages:    state.pages,
   }

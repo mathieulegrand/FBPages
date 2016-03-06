@@ -1,6 +1,6 @@
 'use strict'
 
-import FBSDKCore,  { FBSDKGraphRequest } from 'react-native-fbsdkcore'
+import FBSDKCore,  { FBSDKGraphRequest, FBSDKAccessToken } from 'react-native-fbsdkcore'
 import FBSDKLogin, { FBSDKLoginManager } from 'react-native-fbsdklogin'
 
 // -- all the Graph requests are triggered from these functions returning Promises
@@ -28,9 +28,6 @@ export function logout() {
     return resolve();
   });
 }
-
-export const getInfo  = () =>
-  graphRequest('/me', { fields: { string: 'name,picture.width(300)' } })
 
 export const accounts = () =>
   graphRequest('/me/accounts', { fields: { string: 'id,name,picture' } })
@@ -84,3 +81,26 @@ function graphRequest(path, params, token=undefined, version=undefined, method='
       }, path, params, token, version, method).start();
   });
 }
+
+export function checkAccessToken() {
+  return new Promise( (resolve, reject) => {
+    return FBSDKAccessToken.getCurrentAccessToken(
+      (tokenDetails) => {
+        if (tokenDetails) {
+          return FBSDKAccessToken.refreshCurrentAccessToken(
+            (result) => {
+              if (result.error) {
+                reject(result.error)
+              } else {
+                // the token has been refreshed
+                resolve(tokenDetails)
+              }
+            })
+        } else {
+          // we do not have a token
+          reject()
+        }
+      })
+  })
+}
+

@@ -2,7 +2,6 @@
 
 // From here, we mutate the global Redux stores.
 // The reducers are triggered from dispatched Actions.
-
 import { combineReducers } from 'redux'
 import {
   LOGIN_REQUEST,
@@ -10,6 +9,9 @@ import {
   LOGIN_FAILURE,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
+  APP_TOKEN_FAILURE,
+  APP_TOKEN_SUCCESS,
+  APP_TOKEN_CHECK,
   ACCOUNTS_FETCH,
   ACCOUNTS_FETCH_SUCCESS,
   ACCOUNTS_FETCH_FAILURE,
@@ -43,36 +45,55 @@ import {
 
 // the Login store
 const initialLoginState = {
-  requesting: false,
-  success:    false,
-  error:      null,
+  requesting:          false,
+  success:             false,
+  error:               null,
+  permissions:         null,
+  declinedPermissions: null,
+  tokenString:         null,
+  userID:              null,
 }
 
 const login = (state = initialLoginState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
+    case APP_TOKEN_CHECK:
       return Object.assign({}, state, {
-        requesting: true,
-        success:    false,
-        error:      null,
+        requesting:          true,
+        success:             false,
+        error:               null,
       })
     case LOGIN_SUCCESS:
+    case PUBLISH_PERMISSIONS_SUCCESS:
       return Object.assign({}, state, {
-        requesting: false,
-        success:    true,
-        error:      null,
+        requesting:          false,
+        success:             true,
+        error:               null,
+        permissions:         action.result.grantedPermissions,
+        declinedPermissions: action.result.declinedPermissions,
       })
     case LOGOUT_SUCCESS:
-      return Object.assign({}, state, {
-        requesting: false,
-        success:    false,
-        error:      null,
-      })
+      return Object.assign({}, state, initialLoginState)
     case LOGIN_FAILURE:
+    case APP_TOKEN_FAILURE:
       return Object.assign({}, state, {
-        requesting: false,
-        success:    false,
-        error:      action.error,
+        requesting:          false,
+        success:             false,
+        error:               action.error,
+        permissions:         null,
+        declinedPermissions: null,
+        tokenString:         null,
+        userID:              null,
+      })
+    case APP_TOKEN_SUCCESS:
+      return Object.assign({}, state, {
+        requesting:          false,
+        success:             true,
+        error:               null,
+        permissions:         action.tokenDetails.permissions,
+        declinedPermissions: action.tokenDetails.declinedPermissions,
+        tokenString:         action.tokenDetails.tokenString,
+        userID:              action.tokenDetails.userID,
       })
     default:
       return state;
