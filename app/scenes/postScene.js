@@ -44,7 +44,7 @@ class PostScene extends React.Component {
         })
         .catch( Function.prototype )
     } else {
-      dispatch(actionCreators.getPageToken(currentPageId))
+      dispatch(actionCreators.getPageToken(pages.currentPageId))
         .then( Function.prototype )
         .catch( Function.prototype )
     }

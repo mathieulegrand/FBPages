@@ -44,10 +44,11 @@ class Root extends React.Component {
 
     return (
       <Icon.TabBarItem title={ options.title }
-                       selected={ this.state.selectedTab === options.title }
-                       onPress={() => { this.setState({ selectedTab: options.title }); }}
-                       iconName={ options.iconName }
-                       selectedIconName={ options.selectedIconName }>
+                          selected={ this.state.selectedTab === options.title }
+                          onPress={() => { this.setState({ selectedTab: options.title }); }}
+                          iconName={ options.iconName }
+                          selectedIconName={ options.selectedIconName }
+                          iconSize={ 30 }>
         { route }
       </Icon.TabBarItem>
     );
