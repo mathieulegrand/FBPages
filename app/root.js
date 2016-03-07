@@ -18,10 +18,14 @@ import PostScene     from './scenes/postScene'
 // -- My components
 import Loading       from './components/loading'
 
+// -- The main class of the application
 class Root extends React.Component {
+
+  // those closures can be passed down to control the drawer state from a subcomponent
   closeDrawer = () => { this.refs.drawer.close() };
   openDrawer  = () => { this.refs.drawer.open()  };
 
+  // we have a constructor to maintain the selected tab in the state of the class
   constructor(props) {
     super(props);
 
@@ -32,16 +36,20 @@ class Root extends React.Component {
     };
   }
 
+  // another closure to go back to the default "Feed" (Home) tab
   gotoDefaultTab() {
     this.setState({ selectedTab: this.defaultTab });
   }
 
+  // convenience function to return a TabBarItem
   makeTabItem(options) {
     let route = <HomeScene openDrawer={ this.openDrawer.bind(this) }/>;
     if (options.route === 'Post') {
       route = <PostScene gotoDefaultTab={ this.gotoDefaultTab.bind(this) }/>;
     }
 
+    // here I use *Icon*.TabBarItem to be able to use a direct Icon reference
+    // from the react-native-vector-icons/Ionicons library.
     return (
       <Icon.TabBarItem title={ options.title }
                           selected={ this.state.selectedTab === options.title }
@@ -54,6 +62,7 @@ class Root extends React.Component {
     );
   }
 
+  // used to validate the existing Facebook token (if any)
   componentWillMount() {
     const { dispatch, login } = this.props
 
@@ -63,6 +72,7 @@ class Root extends React.Component {
     dispatch(actionCreators.checkAppToken()).then( Function.prototype ).catch( Function.prototype );
   }
 
+  // used to request the list of accounts (Pages), and auto-select the first one.
   componentWillReceiveProps(props) {
     const { dispatch, login, accounts, pages } = props // ! the new props to be
 
@@ -82,6 +92,8 @@ class Root extends React.Component {
     }
   }
 
+  // the main render method will render the Drawer + TabBar + HomeScene if we
+  // are logged in Facebook, and the Welcome screen if we are not.
   render() {
     const { dispatch, login, accounts } = this.props
 
@@ -140,6 +152,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps)(Root);
 
+// +TODO: maybe merge all the styles together in an external file
 const drawerStyle = {
   shadowColor: "#000000",
   shadowOpacity: 0.4,
