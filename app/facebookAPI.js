@@ -55,7 +55,8 @@ export const FEED_ALL         = 'all'
 
 export const pageFeed = (pageId, postsToShow=FEED_PUBLISHED) => {
   let url    = `/${pageId}`;
-  let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' } };
+  let params = { fields: { string: 'link,message,story,type,attachments,from{name,picture},created_time' },
+                 limit:  { string: '4'} };
   if (postsToShow === FEED_PUBLISHED) {
     url += '/feed';
   } else {

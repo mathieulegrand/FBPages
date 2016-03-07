@@ -1,5 +1,7 @@
 'use strict'
 
+import _ from 'lodash'
+
 // From here, we mutate the global Redux stores.
 // The reducers are triggered from dispatched Actions.
 import { combineReducers } from 'redux'
@@ -22,6 +24,9 @@ import {
   PAGECONTENT_FETCH,
   PAGECONTENT_FETCH_SUCCESS,
   PAGECONTENT_FETCH_FAILURE,
+  PAGING_NEXT_FETCH,
+  PAGING_NEXT_FETCH_SUCCESS,
+  PAGING_NEXT_FETCH_FAILURE,
   POSTINSIGHTS_FETCH,
   POSTINSIGHTS_FETCH_SUCCESS,
   POSTINSIGHTS_FETCH_FAILURE,
@@ -139,7 +144,8 @@ const initialPagesState = {
   currentPageId:         undefined,
   // all about showing the current page and its header
   pageInfo:              {},
-  pageContent:           {},
+  pageContent:           [],
+  pagingContext:         null,
   requestingInfo:        false,
   successInfo:           false,
   requestingContent:     false,
@@ -177,6 +183,7 @@ const pages = (state = initialPagesState, action) => {
         currentPageId:     action.pageid,
         pageInfo:          {},
         pageContent:       {},
+        pagingContext:     null,
         requestingInfo:    false,
         successInfo:       false,
         requestingContent: false,
@@ -212,6 +219,7 @@ const pages = (state = initialPagesState, action) => {
     case PAGECONTENT_FETCH:
       return Object.assign({}, state, {
         requestingContent:    true,
+        requestingNextPage:   false,
         successContent:       false,
         error:                null,
         forceReload:          false,
@@ -219,15 +227,44 @@ const pages = (state = initialPagesState, action) => {
     case PAGECONTENT_FETCH_SUCCESS:
       return Object.assign({}, state, {
         requestingContent:    false,
+        requestingNextPage:   false,
         successContent:       true,
         error:                null,
         pageContent:          action.pagecontent.data,
+        pagingContext:        action.pagecontent.paging,
         shown:                action.shown,
         forceReload:          false,
       })
     case PAGECONTENT_FETCH_FAILURE:
       return Object.assign({}, state, {
         requestingContent:    false,
+        requestingNextPage:   false,
+        successContent:       false,
+        error:                action.error,
+        forceReload:          false,
+      })
+    case PAGING_NEXT_FETCH:
+      return Object.assign({}, state, {
+        requestingContent:    false,
+        requestingNextPage:   true,
+        successContent:       false,
+        error:                null,
+        forceReload:          false,
+      })
+    case PAGING_NEXT_FETCH_SUCCESS:
+      return Object.assign({}, state, {
+        requestingContent:    false,
+        requestingNextPage:   false,
+        successContent:       true,
+        error:                null,
+        pageContent:          _.concat(state.pageContent, action.additionalContent.data),
+        pagingContext:        action.additionalContent.paging,
+        forceReload:          false,
+      })
+    case PAGING_NEXT_FETCH_FAILURE:
+      return Object.assign({}, state, {
+        requestingContent:    false,
+        requestingNextPage:   false,
         successContent:       false,
         error:                action.error,
         forceReload:          false,

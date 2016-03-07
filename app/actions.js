@@ -21,6 +21,9 @@ export const PAGEINFO_FETCH_FAILURE      = 'PAGEINFO_FETCH_FAILURE'
 export const PAGECONTENT_FETCH           = 'PAGECONTENT_FETCH'
 export const PAGECONTENT_FETCH_SUCCESS   = 'PAGECONTENT_FETCH_SUCCESS'
 export const PAGECONTENT_FETCH_FAILURE   = 'PAGECONTENT_FETCH_FAILURE'
+export const PAGING_NEXT_FETCH           = 'PAGING_NEXT_FETCH'
+export const PAGING_NEXT_FETCH_SUCCESS   = 'PAGING_NEXT_FETCH_SUCCESS'
+export const PAGING_NEXT_FETCH_FAILURE   = 'PAGING_NEXT_FETCH_FAILURE'
 export const POSTINSIGHTS_FETCH          = 'POSTINSIGHTS_FETCH'
 export const POSTINSIGHTS_FETCH_SUCCESS  = 'POSTINSIGHTS_FETCH_SUCCESS'
 export const POSTINSIGHTS_FETCH_FAILURE  = 'POSTINSIGHTS_FETCH_FAILURE'
@@ -59,6 +62,10 @@ const accountsFetchFailure = (error)    => ({type: ACCOUNTS_FETCH_FAILURE, error
 const pageinfoFetch        = ()         => ({type: PAGEINFO_FETCH})
 const pageinfoFetchSuccess = (pageinfo) => ({type: PAGEINFO_FETCH_SUCCESS, pageinfo})
 const pageinfoFetchFailure = (error)    => ({type: PAGEINFO_FETCH_FAILURE, error})
+
+const pagingNextFetch        = ()                  => ({type: PAGING_NEXT_FETCH})
+const pagingNextFetchSuccess = (additionalContent) => ({type: PAGING_NEXT_FETCH_SUCCESS, additionalContent})
+const pagingNextFetchFailure = (error)             => ({type: PAGING_NEXT_FETCH_FAILURE, error})
 
 const pagecontentFetch        = ()                   => ({type: PAGECONTENT_FETCH})
 const pagecontentFetchSuccess = (pagecontent, shown) => ({
@@ -190,6 +197,23 @@ export function pageContent(pageId, postsToShow=facebookAPI.FEED_PUBLISHED) {
         dispatch(pagecontentFetchFailure(error))
         reject(error)
       })
+    })
+  }
+}
+
+export function pagingNext(nextPageURL) {
+  return dispatch => {
+    dispatch(pagingNextFetch())
+    return new Promise( (resolve, reject) => {
+      fetch(nextPageURL).then(r => r.json())
+        .then( (data) => {
+          dispatch(pagingNextFetchSuccess(data))
+          resolve(data)
+        })
+        .catch( (error) => {
+          dispatch(pagingNextFetchFailure(error))
+          reject(error)
+        })
     })
   }
 }

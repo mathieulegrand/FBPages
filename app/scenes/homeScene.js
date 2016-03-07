@@ -193,6 +193,18 @@ class HomeScene extends React.Component {
     );
   }
 
+  loadMoreRows() {
+    const { dispatch, pages } = this.props
+
+    if (pages.pagingContext && !pages.requestingNextPage && !pages.error) {
+      dispatch(actionCreators.pagingNext(pages.pagingContext.next))
+    }
+  }
+
+  onEndReached() {
+    this.loadMoreRows()
+  }
+
   renderActionButton(text, onPress) {
     return (
       <React.TouchableOpacity onPress={onPress}>
@@ -265,6 +277,8 @@ class HomeScene extends React.Component {
             dataSource={this.props.dataSource}
             renderRow={this.renderRowView.bind(this)}
             renderHeader={this.renderHeader.bind(this)}
+            onEndReached={this.onEndReached.bind(this)}
+            onEndReachedThreshold={20}
             renderSectionHeader={this.renderSectionHeaderView.bind(this)}
             renderSeparator={this.renderSeparatorView.bind(this)} />
         </NavBar>
