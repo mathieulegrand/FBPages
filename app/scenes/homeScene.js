@@ -197,7 +197,7 @@ class HomeScene extends React.Component {
     const { dispatch, pages } = this.props
 
     if (pages.pagingContext && !pages.requestingNextPage && !pages.error) {
-      dispatch(actionCreators.pagingNext(pages.pagingContext.next))
+      dispatch(actionCreators.pagingNextWithInsights(pages.pagingContext.next))
     }
   }
 

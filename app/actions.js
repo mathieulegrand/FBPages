@@ -218,13 +218,28 @@ export function pagingNext(nextPageURL) {
   }
 }
 
+export function pagingNextWithInsights(nextPageURL) {
+  return dispatch => {
+    return new Promise( (resolve, reject) => {
+      dispatch(pagingNext(nextPageURL)).then( (newContent) => {
+        for (let entry of newContent.data) {
+          if (entry.id) {
+            dispatch(postInsights(entry.id))
+          }
+        }
+        resolve(newContent)
+      }).catch( (error) => { reject(error) })
+    })
+  }
+}
+
 export function postInsights(postId) {
   return dispatch => {
     dispatch(postinsightsFetch(postId))
     return new Promise( (resolve, reject) => {
       facebookAPI.postInsights(postId).then((postInsights) => {
         dispatch(postinsightsFetchSuccess(postId, postInsights))
-        resolve()
+        resolve(postInsights)
       }).catch((error) => {
         dispatch(postinsightsFetchFailure(postId, error))
         reject(error)
@@ -243,7 +258,7 @@ export function pageContentWithInsights(pageId, postsToShow=facebookAPI.FEED_PUB
             dispatch(postInsights(entry.id))
           }
         }
-        resolve()
+        resolve(newContent)
       }).catch( (error) => { reject(error) })
     })
   }
